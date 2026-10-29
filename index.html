@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>GH-Leather — Премиальное ателье пошива, реставрации и покраски изделий из кожи и меха</title>
     <meta name="description" content="Индивидуальный пошив, перекрой, сложная реставрация и покраска кожаных курток, шуб, обуви, сумок, салонов авто и мебели в Волгограде. Гарантия качества от мастеров с опытом более 15 лет.">
     <!-- Fonts -->
@@ -27,19 +27,19 @@
     <div class="top-bar">
         <div class="container top-bar-content">
             <div class="top-info">
-                <span><i data-lucide="map-pin"></i> г. Волгоград, ул. Ангарская, 114 (Дзержинский р-н)</span>
+                <span><i data-lucide="map-pin"></i> г. Волгоград, ул. Ангарская, 114</span>
                 <span class="divider">•</span>
                 <span><i data-lucide="clock"></i> Пн–Сб: 10:00 — 19:00</span>
             </div>
             <div class="top-contacts">
                 <a href="tel:+78442503299" class="phone-link"><i data-lucide="phone-call"></i> +7 (8442) 50-32-99</a>
-                <a href="tel:+79275103299" class="phone-link">+7 (927) 510-32-99</a>
+                <a href="tel:+79275103299" class="phone-link"><i data-lucide="smartphone"></i> +7 (927) 510-32-99</a>
             </div>
         </div>
     </div>
 
     <!-- Main Navigation Header -->
-    <header class="navbar">
+    <header class="navbar" id="navbar">
         <div class="container nav-container">
             <a href="#" class="brand-logo">
                 <div class="logo-crest">
@@ -61,27 +61,42 @@
             </nav>
 
             <div class="nav-actions">
-                <button class="btn btn-luxury" onclick="openModal('Оценка по фото')">
+                <button class="btn btn-luxury desktop-only-btn" onclick="openModal('Оценка по фото')">
                     <i data-lucide="camera"></i> Оценить по фото
                 </button>
-                <button class="mobile-toggle" onclick="toggleMobileMenu()">
-                    <i data-lucide="menu"></i>
+                <button class="mobile-toggle" id="menu-toggle-btn" aria-label="Открыть меню" onclick="toggleMobileMenu()">
+                    <i data-lucide="menu" id="menu-icon"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Mobile Drawer -->
-    <div id="mobile-menu" class="mobile-menu">
-        <button class="close-menu-btn" onclick="toggleMobileMenu()"><i data-lucide="x"></i></button>
-        <a href="#services" onclick="toggleMobileMenu()">Услуги</a>
-        <a href="#calculator" onclick="toggleMobileMenu()">Калькулятор</a>
-        <a href="#before-after" onclick="toggleMobileMenu()">До и После</a>
-        <a href="#advantages" onclick="toggleMobileMenu()">Преимущества</a>
-        <a href="#process" onclick="toggleMobileMenu()">Процесс</a>
-        <a href="#contacts" onclick="toggleMobileMenu()">Контакты</a>
+    <!-- Mobile Drawer Overlay & Menu -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+    <div id="mobile-menu" class="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu-header">
+            <div class="brand-logo">
+                <div class="logo-crest"><span class="logo-initials">GH</span></div>
+                <div class="logo-text-group">
+                    <span class="logo-title">GH-LEATHER</span>
+                    <span class="logo-subtitle">АТЕЛЬЕ В ВОЛГОГРАДЕ</span>
+                </div>
+            </div>
+            <button class="close-menu-btn" onclick="toggleMobileMenu()" aria-label="Закрыть меню">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="#services" onclick="toggleMobileMenu()"><i data-lucide="scissors"></i> Услуги и цены</a>
+            <a href="#calculator" onclick="toggleMobileMenu()"><i data-lucide="calculator"></i> Калькулятор расчёта</a>
+            <a href="#before-after" onclick="toggleMobileMenu()"><i data-lucide="sparkles"></i> Примеры «До и После»</a>
+            <a href="#advantages" onclick="toggleMobileMenu()"><i data-lucide="award"></i> Преимущества</a>
+            <a href="#process" onclick="toggleMobileMenu()"><i data-lucide="check-circle-2"></i> Процесс работы</a>
+            <a href="#contacts" onclick="toggleMobileMenu()"><i data-lucide="map-pin"></i> Контакты и адрес</a>
+        </nav>
         <div class="mobile-menu-contacts">
-            <a href="tel:+78442503299" class="btn btn-outline full-width"><i data-lucide="phone"></i> Позвонить в ателье</a>
+            <a href="tel:+78442503299" class="btn btn-outline full-width"><i data-lucide="phone"></i> +7 (8442) 50-32-99</a>
+            <a href="https://wa.me/79275103299" target="_blank" class="btn btn-whatsapp full-width"><i data-lucide="message-circle"></i> Написать в WhatsApp</a>
         </div>
     </div>
 
@@ -89,7 +104,7 @@
         <!-- Hero Section -->
         <section class="hero-section">
             <div class="hero-backdrop"></div>
-            <div class="container hero-container" data-aos="fade-up" data-aos-duration="900">
+            <div class="container hero-container" data-aos="fade-up" data-aos-duration="800">
                 <div class="luxury-badge">
                     <span class="badge-dot"></span>
                     <span>Ремесленное качество • Волгоград • Опыт более 15 лет</span>
@@ -105,15 +120,15 @@
                         <i data-lucide="calculator"></i> Рассчитать стоимость
                     </button>
                     <button class="btn btn-glass" onclick="openModal('Быстрая консультация')">
-                        <i data-lucide="message-square"></i> Консультация мастера
+                        <i data-lucide="camera"></i> Оценить по фото
                     </button>
                 </div>
 
                 <!-- Fast Stats Bar -->
-                <div class="hero-stats" data-aos="fade-up" data-aos-delay="200">
+                <div class="hero-stats" data-aos="fade-up" data-aos-delay="150">
                     <div class="stat-box">
                         <span class="stat-num">15+</span>
-                        <span class="stat-caption">Лет безупречного опыта</span>
+                        <span class="stat-caption">Лет опыта мастеров</span>
                     </div>
                     <div class="stat-box">
                         <span class="stat-num">> 12 000</span>
@@ -121,11 +136,11 @@
                     </div>
                     <div class="stat-box">
                         <span class="stat-num">100%</span>
-                        <span class="stat-caption">Итальянские материалы и красители</span>
+                        <span class="stat-caption">Итальянские красители</span>
                     </div>
                     <div class="stat-box">
                         <span class="stat-num">12 мес.</span>
-                        <span class="stat-caption">Официальная гарантия на шов и цвет</span>
+                        <span class="stat-caption">Официальная гарантия</span>
                     </div>
                 </div>
             </div>
@@ -137,17 +152,19 @@
                 <div class="section-head text-center" data-aos="fade-up">
                     <span class="section-subtitle">ПРОФЕССИОНАЛЬНЫЙ СЕРВИС</span>
                     <h2 class="section-main-title">Полный спектр услуг ателье GH-Leather</h2>
-                    <p class="section-lead">Работаем с любыми типами натуральной кожи (Nappa, замша, нубук, крокодил, питон), пушнины и тканей</p>
+                    <p class="section-lead">Работаем со всеми видами натуральной кожи (Nappa, замша, нубук, крокодил, питон), пушнины и тканей</p>
                 </div>
 
-                <!-- Category Tabs -->
-                <div class="category-tabs" data-aos="fade-up">
-                    <button class="tab-btn active" onclick="filterServices('all')">Все направления</button>
-                    <button class="tab-btn" onclick="filterServices('restoration')">Реставрация и ремонт</button>
-                    <button class="tab-btn" onclick="filterServices('coloring')">Покраска и чистка</button>
-                    <button class="tab-btn" onclick="filterServices('tailoring')">Индивидуальный пошив</button>
-                    <button class="tab-btn" onclick="filterServices('fur')">Перекрой шуб и меха</button>
-                    <button class="tab-btn" onclick="filterServices('auto')">Салоны авто и мебель</button>
+                <!-- Category Tabs with Mobile Scrollable Track -->
+                <div class="category-tabs-wrapper" data-aos="fade-up">
+                    <div class="category-tabs" id="category-tabs">
+                        <button class="tab-btn active" onclick="filterServices('all', this)">Все направления</button>
+                        <button class="tab-btn" onclick="filterServices('restoration', this)">Реставрация и ремонт</button>
+                        <button class="tab-btn" onclick="filterServices('coloring', this)">Покраска и чистка</button>
+                        <button class="tab-btn" onclick="filterServices('tailoring', this)">Индивидуальный пошив</button>
+                        <button class="tab-btn" onclick="filterServices('fur', this)">Перекрой шуб и меха</button>
+                        <button class="tab-btn" onclick="filterServices('auto', this)">Салоны авто и мебель</button>
+                    </div>
                 </div>
 
                 <!-- Services Grid -->
@@ -163,12 +180,12 @@
                 <div class="section-head text-center" data-aos="fade-up">
                     <span class="section-subtitle">РЕАЛЬНЫЕ РЕЗУЛЬТАТЫ</span>
                     <h2 class="section-main-title">Сравните результат работы наших мастеров</h2>
-                    <p class="section-lead">Потяните ползунок в центре, чтобы увидеть изделие до реставрации и после полного восстановления</p>
+                    <p class="section-lead">Потяните ползунок в центре, чтобы оценить изделие до реставрации и после полного восстановления</p>
                 </div>
 
-                <div class="slider-showcase-wrapper" data-aos="zoom-in" data-aos-duration="900">
+                <div class="slider-showcase-wrapper" data-aos="zoom-in" data-aos-duration="800">
                     <div class="before-after-container" id="ba-slider">
-                        <!-- Before (Damaged) -->
+                        <!-- Before Layer -->
                         <div class="ba-layer ba-before">
                             <div class="ba-visual visual-before">
                                 <div class="visual-badge badge-before">ДО РЕСТАВРАЦИИ</div>
@@ -176,18 +193,18 @@
                                     <div class="defect-scratch s1"></div>
                                     <div class="defect-scratch s2"></div>
                                     <div class="defect-worn w1"></div>
-                                    <div class="defect-tag">Глубокие потертости, разрывы и потеря пигмента</div>
+                                    <div class="defect-tag">Потертости, разрывы и выцветший пигмент</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- After (Restored) -->
+                        <!-- After Layer (Restored) -->
                         <div class="ba-layer ba-after" id="ba-after-layer">
                             <div class="ba-visual visual-after">
                                 <div class="visual-badge badge-after">ПОСЛЕ РЕСТАВРАЦИИ</div>
                                 <div class="leather-texture-restored">
                                     <div class="restored-shine"></div>
-                                    <div class="restored-tag">Глубокое насыщение цвета, восстановление структуры кожи, защитный воск Saphir</div>
+                                    <div class="restored-tag">Глубокий цвет, восстановленная структура, защитный воск Saphir</div>
                                 </div>
                             </div>
                         </div>
@@ -207,7 +224,7 @@
                     <div class="slider-caption-card">
                         <div class="caption-item">
                             <h4>Клинический случай: Куртка Brunello Cucinelli</h4>
-                            <p>Устранены порезы на локтях, восстановлена заводская эластичность кожи растительного дубления, нанесена глубокая пропитка и полировка защитным составом с эффектом шелка.</p>
+                            <p>Устранены порезы на локтях, восстановлена заводская эластичность кожи растительного дубления, нанесена глубокая пропитка и полировка защитным воском.</p>
                         </div>
                         <div class="caption-action">
                             <button class="btn btn-luxury" onclick="openModal('Заявка по фото куртки')">
@@ -226,13 +243,13 @@
                     <div class="calc-sidebar">
                         <span class="section-subtitle">ИНТЕРАКТИВНЫЙ РАСЧЁТ</span>
                         <h2 class="calc-title">Калькулятор стоимости услуг</h2>
-                        <p class="calc-desc">Выберите параметры вашего изделия, чтобы моментально рассчитать ориентировочную стоимость и срок исполнения работы.</p>
+                        <p class="calc-desc">Выберите параметры вашего изделия, чтобы моментально рассчитать ориентировочную смету и срок исполнения.</p>
                         
                         <div class="calc-guarantee-box">
                             <i data-lucide="shield-check" class="guar-icon"></i>
                             <div>
-                                <strong>Фиксированная смета</strong>
-                                <p>Цена утверждается до начала работ и не меняется в процессе.</p>
+                                <strong>Фиксированная цена</strong>
+                                <p>Смета согласовывается до начала работ и не растёт в процессе.</p>
                             </div>
                         </div>
                     </div>
@@ -256,7 +273,7 @@
                                 </div>
                                 <div class="calc-option" data-type="fur" data-base="9000">
                                     <i data-lucide="feather"></i>
-                                    <span>Перекрой меха / шубы</span>
+                                    <span>Перекрой шубы / меха</span>
                                 </div>
                             </div>
                         </div>
@@ -264,15 +281,17 @@
                         <!-- Step 2: Product Item -->
                         <div class="calc-step-group">
                             <label class="calc-step-label">2. Изделие:</label>
-                            <select id="item-selector" class="calc-select" onchange="calculateTotal()">
-                                <option value="1.0">Кожаная куртка / косуха / плащ</option>
-                                <option value="1.5">Шуба из норки / соболя / песца</option>
-                                <option value="1.2">Дубленка / зимний авиатор</option>
-                                <option value="0.8">Брендовая сумка / портфель / рюкзак</option>
-                                <option value="0.7">Обувь (туфли, сапоги, ботинки)</option>
-                                <option value="2.2">Салон автомобиля (комплекс)</option>
-                                <option value="1.6">Кожаное кресло / элементы дивана</option>
-                            </select>
+                            <div class="select-wrapper">
+                                <select id="item-selector" class="calc-select" onchange="calculateTotal()">
+                                    <option value="1.0">Кожаная куртка / косуха / плащ</option>
+                                    <option value="1.5">Шуба из норки / соболя / песца</option>
+                                    <option value="1.2">Дубленка / зимний авиатор</option>
+                                    <option value="0.8">Брендовая сумка / портфель / рюкзак</option>
+                                    <option value="0.7">Обувь (туфли, сапоги, ботинки)</option>
+                                    <option value="2.2">Салон автомобиля (комплекс)</option>
+                                    <option value="1.6">Кожаное кресло / элементы дивана</option>
+                                </select>
+                            </div>
                         </div>
 
                         <!-- Step 3: Material -->
@@ -282,7 +301,7 @@
                                 <button type="button" class="pill-btn active" data-mat="1.0" onclick="setMaterial(this)">Гладкая кожа Nappa</button>
                                 <button type="button" class="pill-btn" data-mat="1.25" onclick="setMaterial(this)">Замша / Велюр / Нубук</button>
                                 <button type="button" class="pill-btn" data-mat="1.4" onclick="setMaterial(this)">Натуральный мех</button>
-                                <button type="button" class="pill-btn" data-mat="1.7" onclick="setMaterial(this)">Экзотическая кожа (крокодил/питон)</button>
+                                <button type="button" class="pill-btn" data-mat="1.7" onclick="setMaterial(this)">Экзотическая кожа</button>
                             </div>
                         </div>
 
@@ -298,12 +317,12 @@
                                 <label class="checkbox-container">
                                     <input type="checkbox" id="opt-hardware" value="2500" onchange="calculateTotal()">
                                     <span class="checkmark"></span>
-                                    <span>Замена молний и фурнитуры на премиальные Raccagni/YKK (+2 500 ₽)</span>
+                                    <span>Замена молний и фурнитуры Raccagni/YKK (+2 500 ₽)</span>
                                 </label>
                                 <label class="checkbox-container">
                                     <input type="checkbox" id="opt-express" value="3000" onchange="calculateTotal()">
                                     <span class="checkmark"></span>
-                                    <span>Срочное выполнение за 48 часов (+3 000 ₽)</span>
+                                    <span>Срочный заказ за 48 часов (+3 000 ₽)</span>
                                 </label>
                             </div>
                         </div>
@@ -336,25 +355,25 @@
                 </div>
 
                 <div class="advantages-grid">
-                    <div class="adv-card" data-tilt data-aos="fade-up" data-aos-delay="100">
+                    <div class="adv-card" data-aos="fade-up" data-aos-delay="100">
                         <div class="adv-icon-wrap"><i data-lucide="award"></i></div>
                         <h3>Итальянская премиум-химия</h3>
                         <p>Используем только профессиональные составы Saphir Medaille D'or, Fenice и Giardini. Цвет не линяет, не красит одежду и не трескается на морозе.</p>
                     </div>
 
-                    <div class="adv-card" data-tilt data-aos="fade-up" data-aos-delay="200">
+                    <div class="adv-card" data-aos="fade-up" data-aos-delay="200">
                         <div class="adv-icon-wrap"><i data-lucide="scissors"></i></div>
                         <h3>Ручной раскрой и подгонка</h3>
                         <p>Точная ручная посадка по фигуре шуб и дубленок. Изменим устаревший покрой 90-х и 2000-х в ультрамодный современный силуэт (оверсайз, реглан, косуха).</p>
                     </div>
 
-                    <div class="adv-card" data-tilt data-aos="fade-up" data-aos-delay="300">
+                    <div class="adv-card" data-aos="fade-up" data-aos-delay="300">
                         <div class="adv-icon-wrap"><i data-lucide="palette"></i></div>
                         <h3>Любые эксклюзивные цвета</h3>
                         <p>Сверхточный компьютерный подбор цвета колористом. Доступна покраска в перламутр, металлик, серебро, золото и матовые шелковистые текстуры.</p>
                     </div>
 
-                    <div class="adv-card" data-tilt data-aos="fade-up" data-aos-delay="400">
+                    <div class="adv-card" data-aos="fade-up" data-aos-delay="400">
                         <div class="adv-icon-wrap"><i data-lucide="shield"></i></div>
                         <h3>Официальный договор и гарантия</h3>
                         <p>Выдаем квитанцию строгой отчетности и официальную гарантию на все виды швов, склейки и лакокрасочных покрытий до 12 месяцев.</p>
@@ -528,6 +547,22 @@
             </form>
         </div>
     </div>
+
+    <!-- Mobile Sticky Bottom Action Bar -->
+    <aside class="mobile-bottom-bar" aria-label="Быстрые действия на телефоне">
+        <a href="tel:+78442503299" class="m-bottom-btn">
+            <i data-lucide="phone"></i>
+            <span>Позвонить</span>
+        </a>
+        <a href="https://wa.me/79275103299" target="_blank" class="m-bottom-btn m-btn-wa">
+            <i data-lucide="message-circle"></i>
+            <span>WhatsApp</span>
+        </a>
+        <button type="button" class="m-bottom-btn m-btn-action" onclick="openModal('Быстрая оценка по фото')">
+            <i data-lucide="camera"></i>
+            <span>Оценка фото</span>
+        </button>
+    </aside>
 
     <!-- Toast Notifications Container -->
     <div id="toast-wrap" class="toast-wrap"></div>

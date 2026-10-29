@@ -1,6 +1,6 @@
 /**
  * GH-LEATHER — Luxury Atelier Interactive Application
- * Built with Lucide Icons, AOS, Dexie DB, Canvas Confetti & Vanilla Tilt
+ * Optimized for Mobile & Desktop Performance
  */
 
 // Services Data Catalog
@@ -132,9 +132,11 @@ function renderServices(filter = 'all') {
     if (window.lucide) lucide.createIcons();
 }
 
-function filterServices(category) {
+function filterServices(category, btnElement) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    if (btnElement) {
+        btnElement.classList.add('active');
+    }
     renderServices(category);
 }
 
@@ -147,9 +149,9 @@ function initBeforeAfterSlider() {
 
     let isDragging = false;
 
-    function updateSlider(x) {
+    function updateSlider(clientX) {
         const rect = container.getBoundingClientRect();
-        let pos = (x - rect.left) / rect.width;
+        let pos = (clientX - rect.left) / rect.width;
         if (pos < 0.05) pos = 0.05;
         if (pos > 0.95) pos = 0.95;
 
@@ -172,7 +174,7 @@ function initBeforeAfterSlider() {
         isDragging = false;
     });
 
-    // Touch support
+    // Touch support (Mobile)
     container.addEventListener('touchstart', (e) => {
         isDragging = true;
         updateSlider(e.touches[0].clientX);
@@ -194,7 +196,6 @@ let currentMaterialMult = 1.0;
 let currentDuration = '3–5 дней';
 
 function initCalculatorControls() {
-    // Type options
     const typeOpts = document.querySelectorAll('#type-selector .calc-option');
     typeOpts.forEach(opt => {
         opt.addEventListener('click', () => {
@@ -288,13 +289,13 @@ async function loadOrdersTable() {
             <td><strong>#${o.id + 1040}</strong></td>
             <td>${o.item}</td>
             <td><span style="color: #cbd5e1;">${o.material}</span></td>
-            <td><strong style="color: #f3e5ab;">${o.price}</strong></td>
+            <td><strong style="color: #f5e6b3;">${o.price}</strong></td>
             <td><span class="order-badge">${o.status}</span></td>
         </tr>
     `).join('');
 }
 
-// ================= Modal & Phone Masks =================
+// ================= Modal & Mobile Navigation =================
 function openModal(serviceTitle = 'Запись на консультацию') {
     const modal = document.getElementById('bookingModal');
     const heading = document.getElementById('modal-heading');
@@ -311,7 +312,21 @@ function closeModal() {
 
 function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
-    if (menu) menu.classList.toggle('open');
+    const overlay = document.getElementById('mobile-menu-overlay');
+    if (!menu) return;
+
+    const isOpen = menu.classList.contains('open');
+    if (isOpen) {
+        menu.classList.remove('open');
+        menu.setAttribute('aria-hidden', 'true');
+        if (overlay) overlay.classList.remove('open');
+        document.body.style.overflow = '';
+    } else {
+        menu.classList.add('open');
+        menu.setAttribute('aria-hidden', 'false');
+        if (overlay) overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function scrollToElement(id) {
