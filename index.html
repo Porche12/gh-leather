@@ -182,13 +182,13 @@
 
                 <div class="hero-visual-col" data-aos="fade-left" data-aos-delay="200">
                     <div class="hero-image-card">
-                        <img src="images/slide_2.jpg" alt="Процесс реставрации кожи в ателье GH-Leather" class="hero-featured-img">
+                        <img src="images/hero_leather_craft.jpg" alt="Процесс реставрации кожи в ателье GH-Leather" class="hero-featured-img">
                         <div class="hero-img-overlay"></div>
                         <div class="hero-card-floating-badge">
                             <i data-lucide="award"></i>
                             <div>
                                 <strong>Ручная работа</strong>
-                                <span>Ремесленная точность</span>
+                                <span>Ремесленная точность Saphir</span>
                             </div>
                         </div>
                     </div>
@@ -346,48 +346,50 @@
                 <!-- Interactive Comparison Slider Box -->
                 <div class="slider-showcase-wrapper" data-aos="zoom-in">
                     <div class="before-after-container" id="ba-slider">
-                        <!-- Before Layer -->
+                        <!-- Before Layer (Base) -->
                         <div class="ba-layer ba-before">
-                            <div class="ba-visual visual-before" id="visual-before">
-                                <div class="visual-badge badge-before">ДО РЕСТАВРАЦИИ</div>
-                                <div class="case-card-inner">
-                                    <div class="case-graphic before-graphic" id="case-before-graphic"></div>
-                                    <div class="case-info-tag" id="case-before-tag">
-                                        <strong>Исходное состояние:</strong>
-                                        <span id="case-before-desc">Глубокие потертости рукавов, разрыв на локте, выцветший пигмент кожи</span>
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="images/jacket_before.jpg" alt="Изделие до реставрации" id="ba-img-before" class="ba-image">
+                            <div class="visual-badge badge-before">ДО РЕСТАВРАЦИИ</div>
                         </div>
 
-                        <!-- After Layer -->
+                        <!-- After Layer (Clipped over before) -->
                         <div class="ba-layer ba-after" id="ba-after-layer">
-                            <div class="ba-visual visual-after" id="visual-after">
-                                <div class="visual-badge badge-after">ПОСЛЕ РЕСТАВРАЦИИ</div>
-                                <div class="case-card-inner">
-                                    <div class="case-graphic after-graphic" id="case-after-graphic"></div>
-                                    <div class="case-info-tag" id="case-after-tag">
-                                        <strong>Выполненная работа:</strong>
-                                        <span id="case-after-desc">Устранение разрыва жидкой кожей, колористический подбор тона, глубокая покраска и финишная полировка Saphir</span>
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="images/jacket_after.jpg" alt="Изделие после реставрации" id="ba-img-after" class="ba-image">
+                            <div class="visual-badge badge-after">ПОСЛЕ РЕСТАВРАЦИИ</div>
                         </div>
 
-                        <!-- Handle -->
+                        <!-- Handle with divider line -->
                         <div class="ba-handle" id="ba-handle">
-                            <div class="handle-arrow-left">‹</div>
                             <div class="handle-line"></div>
-                            <div class="handle-circle"><i data-lucide="move-horizontal"></i></div>
+                            <div class="handle-circle" aria-label="Сравнить до и после">
+                                <i data-lucide="move-horizontal"></i>
+                            </div>
                             <div class="handle-line"></div>
-                            <div class="handle-arrow-right">›</div>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Case Study Details (Placed cleanly under the slider) -->
+                    <div class="ba-case-details-grid">
+                        <div class="ba-detail-card before-card">
+                            <div class="detail-badge-row">
+                                <span class="detail-dot dot-before"></span>
+                                <strong>Исходное состояние:</strong>
+                            </div>
+                            <p id="case-before-desc">Глубокие потертости воротника, задиры локтевых зон и сильная потеря заводского пигмента кожи.</p>
+                        </div>
+                        <div class="ba-detail-card after-card">
+                            <div class="detail-badge-row">
+                                <span class="detail-dot dot-after"></span>
+                                <strong>Выполненная работа:</strong>
+                            </div>
+                            <p id="case-after-desc">Шпаклевание жидкой кожей Saphir, колористический подбор тона, двухслойная покраска и матовый лак.</p>
                         </div>
                     </div>
 
                     <div class="slider-caption-card">
                         <div class="caption-item">
-                            <h4 id="case-title">Кейс: Куртка из телячьей кожи</h4>
-                            <p id="case-full-desc">Сложная реставрация поврежденной структуры воротника и рукавов с сохранением оригинальной мягкости и текстуры кожи.</p>
+                            <h4 id="case-title">Кейс: Кожаная куртка</h4>
+                            <p id="case-full-desc">Сложная реставрация структуры кожи с сохранением фабричной эластичности и текстуры.</p>
                         </div>
                         <div class="caption-action">
                             <button class="btn btn-primary-gold" onclick="openWizardModal()">
@@ -401,10 +403,22 @@
                 <div class="atelier-gallery-block" data-aos="fade-up">
                     <h3 class="gallery-block-title">Кадры из мастерской GH-Leather</h3>
                     <div class="gallery-grid">
-                        <div class="gallery-item"><img src="images/slide_3.jpg" alt="Покраска кожи" class="gallery-img"></div>
-                        <div class="gallery-item"><img src="images/slide_4.jpg" alt="Перекрой меха" class="gallery-img"></div>
-                        <div class="gallery-item"><img src="images/slide_5.jpg" alt="Реставрация сумок" class="gallery-img"></div>
-                        <div class="gallery-item"><img src="images/slide_6.jpg" alt="Пошив одежды" class="gallery-img"></div>
+                        <div class="gallery-item">
+                            <img src="images/gallery_dyeing.jpg" alt="Покраска и колористика кожи" class="gallery-img">
+                            <div class="gallery-caption-overlay">Колористика и покраска</div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="images/gallery_fur.jpg" alt="Перекрой и реставрация меха" class="gallery-img">
+                            <div class="gallery-caption-overlay">Перекрой и пошив меха</div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="images/gallery_bag.jpg" alt="Реставрация брендовых сумок" class="gallery-img">
+                            <div class="gallery-caption-overlay">Реставрация сумок и обуви</div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="images/gallery_tailoring.jpg" alt="Индивидуальный пошив из кожи" class="gallery-img">
+                            <div class="gallery-caption-overlay">Индивидуальный пошив</div>
+                        </div>
                     </div>
                 </div>
             </div>

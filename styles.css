@@ -818,43 +818,41 @@ body {
 .before-after-container {
     position: relative;
     width: 100%;
-    height: 480px;
+    height: 520px;
     overflow: hidden;
     cursor: ew-resize;
     user-select: none;
     background: #141210;
+    border-radius: var(--radius-md);
+    --clip-pos: 50%;
 }
 
 .ba-layer {
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
     height: 100%;
     overflow: hidden;
 }
 
 .ba-before {
-    width: 100%;
     z-index: 1;
 }
 
 .ba-after {
-    width: 50%;
     z-index: 2;
-    border-right: 2px solid #FFFFFF;
+    clip-path: inset(0 0 0 var(--clip-pos, 50%));
+    -webkit-clip-path: inset(0 0 0 var(--clip-pos, 50%));
 }
 
-.ba-visual {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.ba-visual img {
+.ba-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     display: block;
+    pointer-events: none;
 }
 
 .visual-badge {
@@ -884,11 +882,11 @@ body {
 .ba-handle {
     position: absolute;
     top: 0;
-    left: 50%;
+    left: var(--clip-pos, 50%);
     width: 44px;
     height: 100%;
     transform: translateX(-50%);
-    z-index: 3;
+    z-index: 5;
     pointer-events: none;
     display: flex;
     flex-direction: column;
@@ -896,8 +894,26 @@ body {
     justify-content: center;
 }
 
+.handle-line {
+    width: 2px;
+    flex-grow: 1;
+    background: #FFFFFF;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+}
+
 .handle-circle {
     width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    background: #FFFFFF;
+    color: var(--dark-section);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--accent-leather);
+}
     height: 44px;
     background: #FFFFFF;
     color: var(--dark-section);
@@ -2347,6 +2363,7 @@ body {
     .maps-cards-grid { grid-template-columns: 1fr; }
     .gallery-grid { grid-template-columns: 1fr 1fr; }
     .calc-pills-grid { grid-template-columns: repeat(2, 1fr); }
+    .before-after-container { height: 360px; }
     .calc-price-range { font-size: 1.65rem; }
     .price-cta-box { flex-direction: column; text-align: center; }
     .price-cta-box .btn { width: 100%; }

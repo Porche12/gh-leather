@@ -98,29 +98,29 @@ const PORTFOLIO_CASES = {
         label: 'Куртка',
         initialDamage: 'Глубокие задиры воротника, сильное истирание локтевых зон и потеря заводского пигмента.',
         workDone: 'Локальное шпаклевание жидкой кожей Saphir, нанесение базы, двухслойная покраска и матовый лак.',
-        beforeImg: 'images/slide_2.jpg',
-        afterImg: 'images/slide_3.jpg'
+        beforeImg: 'images/jacket_before.jpg',
+        afterImg: 'images/jacket_after.jpg'
     },
     bag: {
         label: 'Сумка',
         initialDamage: 'Потертости нижних углов, обрыв оплётки ручек, следы шариковой ручки на клапане.',
         workDone: 'Очистка спиртовыми составами, формование ребер, восстановление эмали и обработка кромок.',
-        beforeImg: 'images/slide_5.jpg',
-        afterImg: 'images/slide_6.jpg'
+        beforeImg: 'images/bag_before.jpg',
+        afterImg: 'images/bag_after.jpg'
     },
     fur: {
         label: 'Шуба',
         initialDamage: 'Устаревший трапециевидный силуэт, залысины вдоль бортов и разрыв мездры под проймой.',
         workDone: 'Полный перекрой в современный силуэт автоледи, укрепление мездры, замена клипс и подкладки.',
-        beforeImg: 'images/slide_4.jpg',
-        afterImg: 'images/slide_2.jpg'
+        beforeImg: 'images/fur_before.jpg',
+        afterImg: 'images/fur_after.jpg'
     },
     shoes: {
         label: 'Обувь',
         initialDamage: 'Белые солевые разводы после зимы, сбитые мыски и вытертые каблуки.',
         workDone: 'Нейтрализация реагентов в спа-ванне, шлифовка мысков, грунтование и пропитка водоотталкивающим воском.',
-        beforeImg: 'images/slide_6.jpg',
-        afterImg: 'images/slide_3.jpg'
+        beforeImg: 'images/shoes_before.jpg',
+        afterImg: 'images/shoes_after.jpg'
     }
 };
 
@@ -736,24 +736,27 @@ function switchPortfolioCase(caseType, btnEl) {
     const initEl = document.getElementById('case-before-desc');
     const workEl = document.getElementById('case-after-desc');
     const fullDescEl = document.getElementById('case-full-desc');
+    const imgBefore = document.getElementById('ba-img-before');
+    const imgAfter = document.getElementById('ba-img-after');
 
-    if (titleEl) titleEl.textContent = `Кейс: ${data.label}`;
+    if (titleEl) titleEl.textContent = "Кейс: " + data.label;
     if (initEl) initEl.textContent = data.initialDamage;
     if (workEl) workEl.textContent = data.workDone;
-    if (fullDescEl) fullDescEl.textContent = `Индивидуальная реставрация: ${data.workDone}`;
+    if (fullDescEl) fullDescEl.textContent = "Индивидуальная реставрация: " + data.workDone;
+    if (imgBefore && data.beforeImg) imgBefore.src = data.beforeImg;
+    if (imgAfter && data.afterImg) imgAfter.src = data.afterImg;
 
     // Reset handle position to 50%
-    const afterLayer = document.getElementById('ba-after-layer');
+    const container = document.getElementById('ba-slider');
     const handle = document.getElementById('ba-handle');
-    if (afterLayer) afterLayer.style.width = '50%';
+    if (container) container.style.setProperty('--clip-pos', '50%');
     if (handle) handle.style.left = '50%';
 }
 
 function initBeforeAfterSlider() {
     const container = document.getElementById('ba-slider');
-    const afterLayer = document.getElementById('ba-after-layer');
     const handle = document.getElementById('ba-handle');
-    if (!container || !afterLayer || !handle) return;
+    if (!container || !handle) return;
 
     let isDragging = false;
 
@@ -763,9 +766,9 @@ function initBeforeAfterSlider() {
         if (pos < 0.05) pos = 0.05;
         if (pos > 0.95) pos = 0.95;
 
-        const percent = pos * 100;
-        afterLayer.style.width = `${percent}%`;
-        handle.style.left = `${percent}%`;
+        const percent = (pos * 100).toFixed(2);
+        container.style.setProperty('--clip-pos', percent + '%');
+        handle.style.left = percent + '%';
     }
 
     container.addEventListener('mousedown', (e) => {
@@ -785,12 +788,16 @@ function initBeforeAfterSlider() {
     // Touch support (Mobile)
     container.addEventListener('touchstart', (e) => {
         isDragging = true;
-        updateSlider(e.touches[0].clientX);
+        if (e.touches && e.touches.length > 0) {
+            updateSlider(e.touches[0].clientX);
+        }
     }, { passive: true });
 
     window.addEventListener('touchmove', (e) => {
         if (!isDragging) return;
-        updateSlider(e.touches[0].clientX);
+        if (e.touches && e.touches.length > 0) {
+            updateSlider(e.touches[0].clientX);
+        }
     }, { passive: true });
 
     window.addEventListener('touchend', () => {
@@ -798,7 +805,6 @@ function initBeforeAfterSlider() {
     });
 }
 
-// ================= Mobile Navigation & Helpers =================
 
 function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');

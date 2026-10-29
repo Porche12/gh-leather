@@ -57,12 +57,32 @@ with sync_playwright() as p:
     bag_price = page.inner_text('#calc-price-display')
     print('Calculator bag price range:', bag_price)
 
-    print('\n=== Testing Before/After Comparison Cases ===')
-    page.click('button[onclick*="bag"]')
-    page.wait_for_timeout(300)
+    print('\n=== Testing Before/After Comparison Cases & Slider Dragging ===')
+    page.click('#portfolio-tabs button[onclick*="bag"]')
+    page.wait_for_timeout(400)
     case_title = page.inner_text('#case-title')
     print('Switched case title:', case_title)
-    assert 'Сумка' in case_title
+    assert 'Сумка' in case_title, f'Expected Сумка in {case_title}'
+
+    # Check that image source switched to bag
+    img_before_src = page.get_attribute('#ba-img-before', 'src')
+    img_after_src = page.get_attribute('#ba-img-after', 'src')
+    print('Switched images:', img_before_src, img_after_src)
+    assert 'bag_before.jpg' in img_before_src
+    assert 'bag_after.jpg' in img_after_src
+
+    # Test slider dragging
+    slider_el = page.locator('#ba-slider')
+    s_box = slider_el.bounding_box()
+    # Drag from 50% to 25%
+    page.mouse.move(s_box['x'] + s_box['width'] * 0.5, s_box['y'] + s_box['height'] * 0.5)
+    page.mouse.down()
+    page.mouse.move(s_box['x'] + s_box['width'] * 0.25, s_box['y'] + s_box['height'] * 0.5)
+    page.mouse.up()
+    page.wait_for_timeout(300)
+    clip_pos = page.evaluate('document.getElementById("ba-slider").style.getPropertyValue("--clip-pos")')
+    print('Clip position after dragging slider left:', clip_pos)
+    assert clip_pos != '' and clip_pos != '50%', f'Slider clip-pos was not updated: {clip_pos}'
 
     print('\n=== Testing Wizard Flow ===')
     # Open wizard
