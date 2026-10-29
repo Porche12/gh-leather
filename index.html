@@ -196,129 +196,57 @@
             </div>
         </section>
 
-        <!-- 4.3. Каталог услуг (Services) -->
-        <section id="services" class="section-padding">
+
+        <!-- Компактная панель быстрого доступа к услугам -->
+        <section id="services" class="section-padding quick-services-section">
             <div class="container">
-                <div class="section-head text-center" data-aos="fade-up">
-                    <span class="section-subtitle">НАШИ НАПРАВЛЕНИЯ</span>
-                    <h2 class="section-main-title">Каталог услуг ателье</h2>
-                    <p class="section-lead">Работаем со всеми видами натуральной кожи (Nappa, замша, нубук, шевро, экзотическая кожа), мехом и плотными тканями</p>
-                </div>
-
-                <!-- 6 Main Services Specified in 4.3 -->
-                <div class="services-grid">
-                    <!-- Service 1 -->
-                    <div class="service-card" data-aos="fade-up" data-aos-delay="100">
-                        <div class="service-header">
-                            <div class="service-icon"><i data-lucide="sparkles"></i></div>
-                            <span class="service-badge">Кожа</span>
+                <div class="quick-services-panel" data-aos="fade-up">
+                    <div class="quick-services-intro">
+                        <div>
+                            <span class="section-subtitle">БЫСТРЫЙ ДОСТУП</span>
+                            <h2 class="section-main-title">Чем можем помочь?</h2>
+                            <p>Выберите тип изделия — откроем нужный раздел калькулятора с ориентировочной стоимостью.</p>
                         </div>
-                        <h3 class="service-title">Реставрация и ремонт кожаных изделий</h3>
-                        <p class="service-desc">Устранение задиров, глубоких царапин, порезов, прожогов и потертостей на куртках, плащах, косухах и жилетах. Восстановление заводской эластичности материала.</p>
-                        <div class="service-meta">
-                            <div class="service-price">
-                                <span class="price-from">Стоимость:</span>
-                                <span class="price-amount">от 3 500 ₽</span>
-                            </div>
-                            <button class="btn btn-luxury" onclick="openServiceDetailModal('Реставрация и ремонт кожаных изделий')">
-                                Подробнее
-                            </button>
-                        </div>
+                        <button type="button" class="btn btn-primary-gold quick-services-cta" onclick="openWizardModal()">
+                            <i data-lucide="camera"></i> Оценить по фото
+                        </button>
                     </div>
-
-                    <!-- Service 2 -->
-                    <div class="service-card" data-aos="fade-up" data-aos-delay="150">
-                        <div class="service-header">
-                            <div class="service-icon"><i data-lucide="paint-brush"></i></div>
-                            <span class="service-badge">Покраска</span>
-                        </div>
-                        <h3 class="service-title">Покраска и восстановление цвета</h3>
-                        <p class="service-desc">Полное обновление цвета или перекраска в новый тон. Французские составы Saphir Medaille D'or и итальянские топ-покрытия. Палитра с эффектами металлик, перламутр и мат.</p>
-                        <div class="service-meta">
-                            <div class="service-price">
-                                <span class="price-from">Стоимость:</span>
-                                <span class="price-amount">от 4 500 ₽</span>
-                            </div>
-                            <button class="btn btn-luxury" onclick="openServiceDetailModal('Покраска и восстановление цвета')">
-                                Подробнее
-                            </button>
-                        </div>
+                    <div class="quick-services-grid" aria-label="Выберите категорию услуг">
+                        <button type="button" class="quick-service-item" onclick="goToService('jacket')">
+                            <span class="quick-service-icon"><i data-lucide="shirt"></i></span>
+                            <span class="quick-service-copy"><strong>Куртки и одежда</strong><small>Реставрация, покраска</small></span>
+                            <i data-lucide="arrow-up-right" class="quick-service-arrow"></i>
+                        </button>
+                        <button type="button" class="quick-service-item" onclick="goToService('bag')">
+                            <span class="quick-service-icon"><i data-lucide="shopping-bag"></i></span>
+                            <span class="quick-service-copy"><strong>Сумки и рюкзаки</strong><small>Ручки, уголки, цвет</small></span>
+                            <i data-lucide="arrow-up-right" class="quick-service-arrow"></i>
+                        </button>
+                        <button type="button" class="quick-service-item" onclick="goToService('shoes')">
+                            <span class="quick-service-icon"><i data-lucide="footprints"></i></span>
+                            <span class="quick-service-copy"><strong>Кожаная обувь</strong><small>Чистка, ремонт, уход</small></span>
+                            <i data-lucide="arrow-up-right" class="quick-service-arrow"></i>
+                        </button>
+                        <button type="button" class="quick-service-item" onclick="goToService('fur')">
+                            <span class="quick-service-icon"><i data-lucide="feather"></i></span>
+                            <span class="quick-service-copy"><strong>Шубы и дублёнки</strong><small>Ремонт и перекрой</small></span>
+                            <i data-lucide="arrow-up-right" class="quick-service-arrow"></i>
+                        </button>
+                        <button type="button" class="quick-service-item" onclick="goToService('auto')">
+                            <span class="quick-service-icon"><i data-lucide="car"></i></span>
+                            <span class="quick-service-copy"><strong>Автосалоны и мебель</strong><small>Сиденья, диваны, рули</small></span>
+                            <i data-lucide="arrow-up-right" class="quick-service-arrow"></i>
+                        </button>
+                        <button type="button" class="quick-service-item" onclick="goToService('tailoring')">
+                            <span class="quick-service-icon"><i data-lucide="scissors"></i></span>
+                            <span class="quick-service-copy"><strong>Индивидуальный пошив</strong><small>По вашим меркам</small></span>
+                            <i data-lucide="arrow-up-right" class="quick-service-arrow"></i>
+                        </button>
                     </div>
-
-                    <!-- Service 3 -->
-                    <div class="service-card" data-aos="fade-up" data-aos-delay="200">
-                        <div class="service-header">
-                            <div class="service-icon"><i data-lucide="feather"></i></div>
-                            <span class="service-badge">Мех и дубленки</span>
-                        </div>
-                        <h3 class="service-title">Ремонт и перекрой шуб, дублёнок и меха</h3>
-                        <p class="service-desc">Полная трансформация устаревших фасонов в современные трендовые силуэты (автоледи, косуха, оверсайз, жилет). Замена крючков, подкладки, реставрация залысин.</p>
-                        <div class="service-meta">
-                            <div class="service-price">
-                                <span class="price-from">Стоимость:</span>
-                                <span class="price-amount">от 9 000 ₽</span>
-                            </div>
-                            <button class="btn btn-luxury" onclick="openServiceDetailModal('Ремонт и перекрой шуб, дублёнок и меха')">
-                                Подробнее
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Service 4 -->
-                    <div class="service-card" data-aos="fade-up" data-aos-delay="250">
-                        <div class="service-header">
-                            <div class="service-icon"><i data-lucide="scissors"></i></div>
-                            <span class="service-badge">Пошив</span>
-                        </div>
-                        <h3 class="service-title">Индивидуальный пошив одежды</h3>
-                        <p class="service-desc">Пошив курток, плащей, бомберов, юбок и брюк по индивидуальным меркам из отборной итальянской кожи Nappa и замши. Идеальная посадка по фигуре с гарантией.</p>
-                        <div class="service-meta">
-                            <div class="service-price">
-                                <span class="price-from">Стоимость:</span>
-                                <span class="price-amount">от 18 000 ₽</span>
-                            </div>
-                            <button class="btn btn-luxury" onclick="openServiceDetailModal('Индивидуальный пошив одежды')">
-                                Подробнее
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Service 5 -->
-                    <div class="service-card" data-aos="fade-up" data-aos-delay="300">
-                        <div class="service-header">
-                            <div class="service-icon"><i data-lucide="briefcase"></i></div>
-                            <span class="service-badge">Сумки и обувь</span>
-                        </div>
-                        <h3 class="service-title">Ремонт и реставрация сумок и обуви</h3>
-                        <p class="service-desc">Спа-уход, удаление пятен и соли, реставрация потертых уголков, ручек, замена молний Raccagni/YKK. Бережное обслуживание премиальных брендов.</p>
-                        <div class="service-meta">
-                            <div class="service-price">
-                                <span class="price-from">Стоимость:</span>
-                                <span class="price-amount">от 2 800 ₽</span>
-                            </div>
-                            <button class="btn btn-luxury" onclick="openServiceDetailModal('Ремонт и реставрация сумок и обуви')">
-                                Подробнее
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Service 6 -->
-                    <div class="service-card" data-aos="fade-up" data-aos-delay="350">
-                        <div class="service-header">
-                            <div class="service-icon"><i data-lucide="car"></i></div>
-                            <span class="service-badge">Салоны и мебель</span>
-                        </div>
-                        <h3 class="service-title">Реставрация кожаной мебели и салонов авто</h3>
-                        <p class="service-desc">Локальный ремонт трещин, прожогов и задиров на автомобильных сиденьях и диванах. Перетяжка рулей перфорированной Nappa, восстановление защитного слоя.</p>
-                        <div class="service-meta">
-                            <div class="service-price">
-                                <span class="price-from">Стоимость:</span>
-                                <span class="price-amount">от 5 000 ₽</span>
-                            </div>
-                            <button class="btn btn-luxury" onclick="openServiceDetailModal('Реставрация кожаной мебели и салонов автомобилей')">
-                                Подробнее
-                            </button>
-                        </div>
+                    <div class="quick-services-footer">
+                        <a href="#prices"><i data-lucide="calculator"></i> Калькулятор стоимости</a>
+                        <a href="#portfolio"><i data-lucide="images"></i> Примеры изделий</a>
+                        <a href="#contacts"><i data-lucide="message-circle"></i> Связаться с мастером</a>
                     </div>
                 </div>
             </div>
@@ -328,9 +256,9 @@
         <section id="portfolio" class="section-padding dark-bg">
             <div class="container">
                 <div class="section-head text-center" data-aos="fade-up">
-                    <span class="section-subtitle">РЕАЛЬНЫЕ РЕЗУЛЬТАТЫ</span>
+                    <span class="section-subtitle">ДЕМОНСТРАЦИЯ ВОССТАНОВЛЕНИЯ</span>
                     <h2 class="section-main-title">Портфолио «До и после»</h2>
-                    <p class="section-lead">Интерактивное сравнение состояния изделий до реставрации в мастерской GH-Leather и после выполненных работ</p>
+                    <p class="section-lead">Один и тот же предмет до и после визуальной обработки. Изображения демонстрационные, а не фотографии выполненного заказа.</p>
                 </div>
 
                 <!-- Category Switcher for Portfolio -->
@@ -338,8 +266,6 @@
                     <div class="category-tabs" id="portfolio-tabs">
                         <button class="tab-btn active" onclick="switchPortfolioCase('jacket', this)">Кожаная куртка</button>
                         <button class="tab-btn" onclick="switchPortfolioCase('bag', this)">Брендовая сумка</button>
-                        <button class="tab-btn" onclick="switchPortfolioCase('fur', this)">Перекрой шубы</button>
-                        <button class="tab-btn" onclick="switchPortfolioCase('shoes', this)">Обувь / Сапоги</button>
                     </div>
                 </div>
 
@@ -348,7 +274,7 @@
                     <div class="before-after-container" id="ba-slider">
                         <!-- Before Layer (Base) -->
                         <div class="ba-layer ba-before">
-                            <img src="images/jacket_before.jpg" alt="Изделие до реставрации" id="ba-img-before" class="ba-image">
+                            <img src="images/jacket_after.jpg" alt="Та же кожаная куртка с визуально смоделированными потертостями до восстановления" id="ba-img-before" class="ba-image">
                             <div class="visual-badge badge-before">ДО РЕСТАВРАЦИИ</div>
                         </div>
 
@@ -359,7 +285,7 @@
                         </div>
 
                         <!-- Handle with divider line -->
-                        <div class="ba-handle" id="ba-handle">
+                        <div class="ba-handle" id="ba-handle" role="slider" tabindex="0" aria-label="Сравнение до и после" aria-valuemin="5" aria-valuemax="95" aria-valuenow="50" aria-valuetext="50 процентов">
                             <div class="handle-line"></div>
                             <div class="handle-circle" aria-label="Сравнить до и после">
                                 <i data-lucide="move-horizontal"></i>
@@ -373,23 +299,23 @@
                         <div class="ba-detail-card before-card">
                             <div class="detail-badge-row">
                                 <span class="detail-dot dot-before"></span>
-                                <strong>Исходное состояние:</strong>
+                                <strong>Состояние «до»:</strong>
                             </div>
-                            <p id="case-before-desc">Глубокие потертости воротника, задиры локтевых зон и сильная потеря заводского пигмента кожи.</p>
+                            <p id="case-before-desc">Моделирование истёртой поверхности и потери насыщенности цвета на той же самой куртке.</p>
                         </div>
                         <div class="ba-detail-card after-card">
                             <div class="detail-badge-row">
                                 <span class="detail-dot dot-after"></span>
-                                <strong>Выполненная работа:</strong>
+                                <strong>Возможный результат:</strong>
                             </div>
-                            <p id="case-after-desc">Шпаклевание жидкой кожей Saphir, колористический подбор тона, двухслойная покраска и матовый лак.</p>
+                            <p id="case-after-desc">Демонстрация обновления цвета и внешнего вида после возможной реставрации.</p>
                         </div>
                     </div>
 
                     <div class="slider-caption-card">
                         <div class="caption-item">
-                            <h4 id="case-title">Кейс: Кожаная куртка</h4>
-                            <p id="case-full-desc">Сложная реставрация структуры кожи с сохранением фабричной эластичности и текстуры.</p>
+                            <h4 id="case-title">Пример: Кожаная куртка</h4>
+                            <p id="case-full-desc">Наглядный пример возможного эффекта. Для реального результата необходим осмотр изделия.</p>
                         </div>
                         <div class="caption-action">
                             <button class="btn btn-primary-gold" onclick="openWizardModal()">
@@ -508,7 +434,9 @@
                     </div>
                 </div>
 
-                <div class="prices-table-container" data-aos="fade-up">
+                <details class="price-list-toggle">
+                    <summary><span><i data-lucide="list"></i> Показать подробный прайс-лист</span><i data-lucide="chevron-down" class="price-list-chevron"></i></summary>
+                    <div class="prices-table-container" data-aos="fade-up">
                     <table class="prices-table">
                         <thead>
                             <tr>
@@ -572,6 +500,7 @@
                         </tbody>
                     </table>
                 </div>
+                </details>
 
                 <div class="price-cta-box" data-aos="fade-up">
                     <div>
