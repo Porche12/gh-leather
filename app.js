@@ -96,16 +96,16 @@ const CALCULATOR_DATA = {
 const PORTFOLIO_CASES = {
     jacket: {
         label: 'Куртка',
-        initialDamage: 'Глубокие задиры воротника, сильное истирание локтевых зон и потеря заводского пигмента.',
-        workDone: 'Локальное шпаклевание жидкой кожей Saphir, нанесение базы, двухслойная покраска и матовый лак.',
-        beforeImg: 'images/jacket_before.jpg',
+        initialDamage: 'Смоделированные потёртости и потеря насыщенности цвета на одной и той же куртке.',
+        workDone: 'Визуализация возможного эффекта восстановления цвета и фактуры.',
+        beforeImg: 'images/jacket_after.jpg',
         afterImg: 'images/jacket_after.jpg'
     },
     bag: {
         label: 'Сумка',
-        initialDamage: 'Потертости нижних углов, обрыв оплётки ручек, следы шариковой ручки на клапане.',
-        workDone: 'Очистка спиртовыми составами, формование ребер, восстановление эмали и обработка кромок.',
-        beforeImg: 'images/bag_before.jpg',
+        initialDamage: 'Моделирование потёртостей и выцветания на той же самой сумке.',
+        workDone: 'Визуализация возможного результата после чистки и окрашивания.',
+        beforeImg: 'images/bag_after.jpg',
         afterImg: 'images/bag_after.jpg'
     },
     fur: {
@@ -725,6 +725,17 @@ function closePrivacyModal() {
     }
 }
 
+
+// Quick access selects the SAME calculator data used by the existing site.
+function goToService(itemKey) {
+    const allowed = ['jacket', 'bag', 'shoes', 'fur', 'auto', 'tailoring'];
+    if (!allowed.includes(itemKey)) return;
+    const pill = document.querySelector('#calc-item-types .calc-pill[data-item="' + itemKey + '"]');
+    setCalcItem(itemKey, pill);
+    const pricing = document.getElementById('prices');
+    if (pricing) pricing.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+}
+
 // ================= Portfolio Case Switcher & Before/After Slider =================
 
 function switchPortfolioCase(caseType, btnEl) {
@@ -739,10 +750,10 @@ function switchPortfolioCase(caseType, btnEl) {
     const imgBefore = document.getElementById('ba-img-before');
     const imgAfter = document.getElementById('ba-img-after');
 
-    if (titleEl) titleEl.textContent = "Кейс: " + data.label;
+    if (titleEl) titleEl.textContent = "Пример: " + data.label;
     if (initEl) initEl.textContent = data.initialDamage;
     if (workEl) workEl.textContent = data.workDone;
-    if (fullDescEl) fullDescEl.textContent = "Индивидуальная реставрация: " + data.workDone;
+    if (fullDescEl) fullDescEl.textContent = "Демонстрационное сравнение (не фото завершённого заказа): " + data.workDone;
     if (imgBefore && data.beforeImg) imgBefore.src = data.beforeImg;
     if (imgAfter && data.afterImg) imgAfter.src = data.afterImg;
 
@@ -750,60 +761,47 @@ function switchPortfolioCase(caseType, btnEl) {
     const container = document.getElementById('ba-slider');
     const handle = document.getElementById('ba-handle');
     if (container) container.style.setProperty('--clip-pos', '50%');
-    if (handle) handle.style.left = '50%';
+    if (handle) { handle.style.left = '50%'; handle.setAttribute('aria-valuenow', '50'); handle.setAttribute('aria-valuetext', '50 процентов'); }
 }
 
 function initBeforeAfterSlider() {
     const container = document.getElementById('ba-slider');
     const handle = document.getElementById('ba-handle');
     if (!container || !handle) return;
-
-    let isDragging = false;
-
-    function updateSlider(clientX) {
-        const rect = container.getBoundingClientRect();
-        let pos = (clientX - rect.left) / rect.width;
-        if (pos < 0.05) pos = 0.05;
-        if (pos > 0.95) pos = 0.95;
-
-        const percent = (pos * 100).toFixed(2);
-        container.style.setProperty('--clip-pos', percent + '%');
-        handle.style.left = percent + '%';
+    let dragging = false;
+    function update(position) {
+        const p = Math.max(5, Math.min(95, position));
+        const value = p.toFixed(1);
+        container.style.setProperty('--clip-pos', value + '%');
+        handle.style.left = value + '%';
+        handle.setAttribute('aria-valuenow', Math.round(p));
+        handle.setAttribute('aria-valuetext', Math.round(p) + ' процентов');
     }
-
-    container.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        updateSlider(e.clientX);
+    function fromPointer(e) {
+        const rect = container.getBoundingClientRect();
+        update(((e.clientX - rect.left) / rect.width) * 100);
+    }
+    container.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        dragging = true;
+        if (container.setPointerCapture) container.setPointerCapture(e.pointerId);
+        fromPointer(e);
     });
-
-    window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        updateSlider(e.clientX);
-    });
-
-    window.addEventListener('mouseup', () => {
-        isDragging = false;
-    });
-
-    // Touch support (Mobile)
-    container.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        if (e.touches && e.touches.length > 0) {
-            updateSlider(e.touches[0].clientX);
-        }
-    }, { passive: true });
-
-    window.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        if (e.touches && e.touches.length > 0) {
-            updateSlider(e.touches[0].clientX);
-        }
-    }, { passive: true });
-
-    window.addEventListener('touchend', () => {
-        isDragging = false;
+    container.addEventListener('pointermove', (e) => { if (dragging) fromPointer(e); });
+    container.addEventListener('pointerup', () => { dragging = false; });
+    container.addEventListener('pointercancel', () => { dragging = false; });
+    handle.addEventListener('keydown', (e) => {
+        let value = parseFloat(handle.getAttribute('aria-valuenow')) || 50;
+        if (e.key === 'ArrowLeft') value -= 5;
+        else if (e.key === 'ArrowRight') value += 5;
+        else if (e.key === 'Home') value = 5;
+        else if (e.key === 'End') value = 95;
+        else return;
+        e.preventDefault();
+        update(value);
     });
 }
+
 
 
 function toggleMobileMenu() {
