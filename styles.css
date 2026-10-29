@@ -1618,7 +1618,8 @@ body {
 
 .footer-bottom-inner {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    text-align: center;
     gap: 1rem;
     flex-wrap: wrap;
 }
