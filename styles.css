@@ -2406,8 +2406,6 @@ body {
 .price-list-toggle[open] .price-list-chevron {transform:rotate(180deg);}
 .price-list-toggle .prices-table-container {margin:0;border-top:1px solid var(--border-sep);}
 .price-list-toggle > summary:focus-visible {outline:2px solid var(--accent-leather);outline-offset:-3px;}
-#portfolio .ba-before .ba-image {filter:brightness(.76) saturate(.51) sepia(.32) contrast(.88);}
-#portfolio .ba-before::after {content:"";position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.42;mix-blend-mode:screen;background-image:repeating-linear-gradient(129deg,transparent 0 32px,rgba(235,213,187,.21) 33px,transparent 34px,transparent 71px),radial-gradient(ellipse at 30% 46%,rgba(226,206,178,.38),transparent 38%),radial-gradient(ellipse at 70% 70%,rgba(228,212,188,.18),transparent 30%);-webkit-mask-image:radial-gradient(ellipse at 50% 50%,#000 5%,transparent 82%);mask-image:radial-gradient(ellipse at 50% 50%,#000 5%,transparent 82%);}
 #portfolio .ba-handle:focus-visible .handle-circle {outline:3px solid var(--accent-gold-soft);outline-offset:4px;}
 #portfolio .ba-image {object-position:center 45%;}
 #services,#prices,#portfolio {scroll-margin-top:90px;}
@@ -2423,3 +2421,107 @@ body {
 }
 @media(prefers-reduced-motion:reduce) {.quick-service-item {transition:none;}.quick-service-item:hover {transform:none;}}
 
+/* Comparison v2: registered images, studio-like backdrop, animated accessible slider */
+#portfolio .category-tabs-wrapper {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:.8rem 1.1rem;
+    margin-bottom:1.65rem;
+}
+#portfolio .category-tabs { max-width:100%; }
+#portfolio .ba-demo-btn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:.45rem;
+    border:1px solid var(--dark-border);
+    border-radius:999px;
+    padding:.67rem 1.1rem;
+    background:var(--dark-section-card);
+    color:var(--dark-text-main);
+    font:600 .86rem var(--font-body);
+    cursor:pointer;
+    transition:border-color .2s, background .2s;
+}
+#portfolio .ba-demo-btn svg {height:16px;width:16px;color:var(--accent-gold-soft);}
+#portfolio .ba-demo-btn:hover {border-color:var(--accent-gold-soft);background:var(--dark-section-hover);}
+#portfolio .ba-demo-btn:focus-visible {outline:2px solid var(--accent-gold-soft);outline-offset:3px;}
+#portfolio .slider-showcase-wrapper {max-width:780px;}
+#portfolio .before-after-container {
+    height:clamp(380px,60vw,580px);
+    border-radius:0;
+    touch-action:pan-y;
+    overscroll-behavior-x:contain;
+    cursor:ew-resize;
+    background:var(--dark-section);
+}
+#portfolio .ba-layer {isolation:isolate; background:var(--dark-section);}
+#portfolio .ba-layer::before {
+    content:"";
+    position:absolute;
+    inset:-40px;
+    background-image:var(--ba-preview-image);
+    background-size:cover;
+    background-position:center center;
+    filter:blur(28px) brightness(.33) saturate(.7);
+    opacity:.8;
+    pointer-events:none;
+}
+#portfolio .ba-before::after {display:none;}
+#portfolio .ba-layer .ba-image {
+    position:relative;
+    z-index:1;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+    filter:none;
+}
+#portfolio .visual-badge {z-index:6;top:1rem;letter-spacing:.035em;font-size:.71rem;}
+#portfolio .ba-handle {z-index:7;}
+#portfolio .ba-handle .handle-circle {
+    width:52px;height:52px;
+    border:2px solid var(--accent-gold-soft);
+    box-shadow:0 8px 25px rgba(0,0,0,.32);
+    transition:box-shadow .18s;
+}
+#portfolio .ba-handle .handle-circle svg {width:25px;height:25px;}
+#portfolio .before-after-container:hover .handle-circle {box-shadow:0 9px 28px rgba(0,0,0,.55);}
+#portfolio .ba-swipe-hint {
+    position:absolute;
+    bottom:18px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:.55rem;
+    pointer-events:none;
+    padding:.6rem .85rem;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:999px;
+    background:rgba(29,27,25,.82);
+    backdrop-filter:blur(12px);
+    color:var(--dark-text-main);
+    font:600 .76rem var(--font-body);
+    white-space:nowrap;
+    opacity:1;
+    transition:opacity .25s;
+}
+#portfolio .ba-swipe-hint svg {height:16px;width:16px;}
+#portfolio .ba-swipe-hint.hidden {opacity:0;}
+#portfolio .ba-handle:focus-visible .handle-circle {outline:3px solid var(--accent-gold-soft);outline-offset:4px;}
+@media (max-width:650px) {
+  #portfolio .before-after-container {height:390px;}
+  #portfolio .visual-badge {font-size:.59rem;max-width:45%;padding:.34rem .55rem;}
+  #portfolio .ba-handle .handle-circle {width:46px;height:46px;}
+  #portfolio .ba-swipe-hint {bottom:12px;}
+  #portfolio .category-tabs-wrapper {gap:.65rem;}
+}
+@media (prefers-reduced-motion: reduce) {
+  #portfolio .ba-swipe-hint {transition:none;}
+  #portfolio .ba-demo-btn {transition:none;}
+}
