@@ -2687,3 +2687,10 @@ body.menu-open {overflow:hidden;}
     #portfolio .ba-handle .handle-circle {height:40px;width:40px;}
 }
 
+
+/* Do not introduce an extra scroll container that disables sticky navigation. */
+html { overflow-x: clip; }
+body { overflow-x: clip; }
+.navbar { position: sticky; top: 0; z-index: 1000; }
+.mobile-toggle { flex-shrink: 0; }
+@media (max-width: 640px) { .navbar { padding: .64rem 0; } .nav-container .brand-logo { min-width:0; } }
