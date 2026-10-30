@@ -60,13 +60,32 @@ def api(section, method, data=None):
     )
     try:
         with urllib.request.urlopen(request, timeout=HTTP_TIMEOUT) as response:
-            answer = json.loads(response.read(262144))
+            data = response.read(262144)
+            response_type = response.headers.get("Content-Type", "unknown")
     except urllib.error.HTTPError as exc:
         raise RuntimeError(f"Beget API {section}/{method}: HTTP {exc.code}") from None
     except urllib.error.URLError as exc:
         raise RuntimeError(f"Beget API connection failed ({type(exc.reason).__name__})") from None
-    except (ValueError, TypeError):
-        raise RuntimeError(f"Beget API returned invalid JSON at {section}/{method}") from None
+    try:
+        if data.startswith(b"\\x1f\\x8b"):
+            import gzip
+            data = gzip.decompress(data)
+        answer = json.loads(data.decode("utf-8-sig"))
+    except (ValueError, TypeError, UnicodeError):
+        clean_type = response_type.split(";")[0][:40]
+        stripped = data.lstrip()
+        body_kind = (
+            "empty" if not stripped else
+            "HTML" if stripped[:30].lower().startswith((b"<html", b"<!doctype", b"<head")) else
+            "JSON-like" if stripped[:1] in (b"{", b"[") else
+            "plain text" if all(32 <= c < 127 or c in (9,10,13) for c in stripped[:100]) else
+            "binary/unknown"
+        )
+        raise RuntimeError(
+            f"Beget API returned non-JSON for {section}/{method}. "
+            f"HTTP content type={clean_type}, body={body_kind}, bytes={len(data)}. "
+            "Check whether API authentication is enabled in Beget settings."
+        ) from None
 
     if answer.get("status") != "success":
         raise RuntimeError(
