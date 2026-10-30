@@ -7,6 +7,8 @@ If the domain is not delegated to Beget DNS, abort instead of guessing.
 """
 import json
 import os
+import subprocess
+import time
 import sys
 import urllib.parse
 import urllib.request
@@ -85,10 +87,28 @@ def formatted(records):
     ]
 
 
+def public_a():
+    # The Beget getData API can expose null placeholders even after its
+    # authoritative zone is already serving the expected real A addresses.
+    # The publicly served DNS is the definitive check.
+    result=subprocess.run(
+        ["dig","+short","A",DOMAIN,"@1.1.1.1"],
+        capture_output=True,text=True,timeout=15,check=False)
+    if result.returncode:
+        return []
+    return [line.strip() for line in result.stdout.splitlines()
+            if line.strip().count(".")==3 and all(part.isdigit() for part in line.strip().split("."))]
+
+
 def main():
     original=snapshot()
     current=[x["value"] for x in formatted(original.get("A",[]))]
-    print("Current root A records:",", ".join(current) or "(none)")
+    print("Beget API A records:",", ".join(current) or "(API has no concrete A values)")
+    public=public_a()
+    print("Public A records:",", ".join(public) or "(none)")
+    if set(public)==set(GITHUB_PAGE_IPS) and len(public)==4:
+        print("SUCCESS: public DNS already points at all GitHub Pages IPs; no writes required.")
+        return
     # Preserve existing MX and TXT data; never overwrite nameservers or mail.
     planned={
       "A":[{"priority":10,"value":value} for value in GITHUB_PAGE_IPS]
@@ -105,12 +125,22 @@ def main():
     result=call("changeRecords",{"fqdn":DOMAIN,"records":planned})
     if result is not True:
         raise RuntimeError("Beget did not confirm DNS record update")
+    # Beget's API may display null A placeholders after an accepted update,
+    # even when the authoritative DNS is publishing all four actual addresses.
+    # Allow DNS propagation and verify the publicly resolved result instead.
+    for attempt in range(4):
+        public=public_a()
+        if set(public)==set(GITHUB_PAGE_IPS) and len(public)==4:
+            print("SUCCESS: all GitHub Pages A records publicly verified.")
+            return
+        if attempt<3:
+            time.sleep(8)
     actual=snapshot()
     new=[x["value"] for x in formatted(actual.get("A",[]))]
-    if set(new)!=set(GITHUB_PAGE_IPS):
-        raise RuntimeError("Beget reported success but GitHub Pages A records differ")
-    print("SUCCESS: ghleather.ru A records point to GitHub Pages.")
-    print("MX/TXT values preserved; DNS propagation may take up to 24 hours.")
+    if set(new)==set(GITHUB_PAGE_IPS) and len(new)==4:
+        print("SUCCESS: Beget API now reports GitHub Pages IPs; public DNS propagation pending.")
+        return
+    raise RuntimeError("Beget accepted update but published A records still differ.")
 
 
 if __name__=="__main__":
