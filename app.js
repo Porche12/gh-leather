@@ -120,21 +120,21 @@ function renderCalcWorks(itemKey) {
     if (!data || !data.works) return;
 
     worksListEl.innerHTML = data.works.map((w, idx) => `
-        <div class="calc-work-card ${idx === currentCalcWorkIndex ? 'active' : ''}" onclick="selectCalcWork(${idx}, this)">
+        <button type="button" class="calc-work-card ${idx === currentCalcWorkIndex ? 'active' : ''}" aria-pressed="${idx === currentCalcWorkIndex}" onclick="selectCalcWork(${idx}, this)">
             <div>
                 <div class="calc-work-name">${w.name}</div>
                 <div class="calc-work-sub">${w.desc}</div>
             </div>
             <div class="calc-work-price">Ориентировочно: ${w.priceRange}</div>
-        </div>
+        </button>
     `).join('');
 }
 
 function selectCalcWork(idx, cardEl) {
     currentCalcWorkIndex = idx;
     const cards = document.querySelectorAll('#calc-works-list .calc-work-card');
-    cards.forEach(c => c.classList.remove('active'));
-    if (cardEl) cardEl.classList.add('active');
+    cards.forEach(c => { c.classList.remove('active'); c.setAttribute('aria-pressed','false'); });
+    if (cardEl) { cardEl.classList.add('active'); cardEl.setAttribute('aria-pressed','true'); }
 
     updateCalcResult();
 }
