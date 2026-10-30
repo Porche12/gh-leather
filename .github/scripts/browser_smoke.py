@@ -95,7 +95,7 @@ try:
                 assert page.locator("#mobile-menu a[href='#prices']").count() >= 1
                 # When scrolled to reviews, neither a fixed top bar nor a
                 # bottom contact bar should cover content.
-                page.locator("#reviews").scroll_into_view_if_needed()
+                page.get_by_role("heading", name="Отзывы на независимых картах").scroll_into_view_if_needed()
                 scrolled = page.evaluate("""() => ({
                     navbarBottom: document.querySelector('.navbar').getBoundingClientRect().bottom,
                     bottomBarCount: document.querySelectorAll('.mobile-bottom-bar').length
