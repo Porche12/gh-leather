@@ -2694,3 +2694,14 @@ body { overflow-x: clip; }
 .navbar { position: sticky; top: 0; z-index: 1000; }
 .mobile-toggle { flex-shrink: 0; }
 @media (max-width: 640px) { .navbar { padding: .64rem 0; } .nav-container .brand-logo { min-width:0; } }
+/* Portfolio: no descriptive cards below interactive comparison. */
+#portfolio .portfolio-source-note {
+  max-width: 780px; margin: -.5rem auto 1.65rem;
+  color: var(--dark-text-muted); font-size: .78rem; line-height:1.55; text-align:center;
+}
+#portfolio .portfolio-source-note a { color: var(--accent-gold-soft); text-decoration:underline; text-underline-offset:2px; }
+#portfolio .slider-showcase-wrapper { overflow: hidden; border-radius: var(--radius-lg); }
+#portfolio .before-after-container { border-radius: var(--radius-lg); }
+#portfolio .ba-case-details-grid,
+#portfolio .slider-caption-card { display: none !important; }
+@media(max-width:640px) { #portfolio .portfolio-source-note {padding:0 .65rem; font-size:.72rem;} }

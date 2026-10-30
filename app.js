@@ -57,15 +57,15 @@ const CALCULATOR_DATA = {
 const PORTFOLIO_CASES = {
     jacket: {
         label: "Кожаная куртка",
-        initialDamage: "Потёртости плеч, рукавов и манжет, потускневшая поверхность кожи.",
-        workDone: "Та же куртка, но с восстановленным цветом и аккуратной поверхностью.",
+        initialDamage: "Следы износа и выцветание кожи на фотографии до реставрации.",
+        workDone: "Фотография восстановленной куртки той же мастерской.",
         beforeImg: "images/studio_jacket_before.jpg",
         afterImg: "images/studio_jacket_after.jpg"
     },
     bag: {
         label: "Кожаная сумка",
-        initialDamage: "Потёртые уголки, ручки и швы, выцветший цвет кожи.",
-        workDone: "Та же сумка, но с обновлённым цветом и ровной поверхностью.",
+        initialDamage: "Состояние сумки до восстановления на фотографии мастерской.",
+        workDone: "Сумка после профессиональной обработки той же мастерской.",
         beforeImg: "images/studio_bag_before.jpg",
         afterImg: "images/studio_bag_after.jpg"
     }
@@ -244,8 +244,7 @@ function switchPortfolioCase(caseType, btnEl) {
     const imgBefore = document.getElementById('ba-img-before');
     const imgAfter = document.getElementById('ba-img-after');
 
-    // The images are generated from the exact same source. Do not switch
-    // to independent stock photography, which breaks alignment.
+    // Actual before-and-after photographs supplied by third-party ateliers.
     const switching = ++comparisonSwitchId;
     const newBefore = new Image();
     const newAfter = new Image();
