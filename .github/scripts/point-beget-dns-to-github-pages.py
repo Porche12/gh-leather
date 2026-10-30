@@ -68,7 +68,7 @@ def snapshot():
     dns_ready = entry.get("is_beget_dns")
     if dns_ready not in (True, 1, "1", "true", "True"):
         raise RuntimeError("Domain is not using Beget DNS; no DNS changed")
-    if str(entry.get("is_subdomain",0))!="0":
+    if entry.get("is_subdomain") not in (False, 0, "0", "false", "False"):
         raise RuntimeError("Expected apex domain, got subdomain")
     if int(entry.get("set_type",0))!=1:
         raise RuntimeError("Domain uses NS/CNAME mode; refusing to overwrite")
