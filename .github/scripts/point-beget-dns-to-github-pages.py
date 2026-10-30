@@ -60,6 +60,11 @@ def snapshot():
     entry=unwrap(call("getData",{"fqdn":DOMAIN}))
     if str(entry.get("fqdn","")).lower().rstrip(".")!=DOMAIN:
         raise RuntimeError("Beget API returned wrong domain")
+    print("Beget domain status: under_control=" + str(entry.get("is_under_control")) +
+          ", is_beget_dns=" + str(entry.get("is_beget_dns")) +
+          ", set_type=" + str(entry.get("set_type")),flush=True)
+    dns=entry.get("records",{}).get("DNS",[])
+    print("Nameservers in Beget zone:",[r.get("value") for r in dns if isinstance(r,dict)],flush=True)
     if str(entry.get("is_beget_dns",0))!="1":
         raise RuntimeError("Domain is not using Beget DNS; no DNS changed")
     if str(entry.get("is_subdomain",0))!="0":
