@@ -1,0 +1,31 @@
+name: Point ghleather.ru to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "CNAME"
+      - ".github/scripts/point-beget-dns-to-github-pages.py"
+      - ".github/workflows/point-beget-domain-to-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  beget-dns:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate custom-domain configuration
+        run: |
+          test "$(cat CNAME)" = "ghleather.ru"
+          python -m py_compile .github/scripts/point-beget-dns-to-github-pages.py
+      - name: Update only ghleather.ru root A records
+        env:
+          BEGET_API_PASSWORD: ${{ secrets.BEGET_API_PASSWORD }}
+        run: python .github/scripts/point-beget-dns-to-github-pages.py
