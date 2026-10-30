@@ -1,25 +1,18 @@
 #!/usr/bin/env bash
-# Deploy GH-Leather static files ONLY to a verified Beget public_html folder.
+# Deploy GH-Leather static files ONLY as a restricted b2000an4_gh account.
 # Requires FTP over explicit TLS and GitHub Actions repository secrets.
 set -Eeuo pipefail
 umask 077
 
-: "${BEGET_FTP_HOST:?Set BEGET_FTP_HOST secret from Beget FTP settings}"
-: "${BEGET_FTP_USER:?Set BEGET_FTP_USER secret to the account FTP login}"
-: "${BEGET_FTP_PASSWORD:?Set BEGET_FTP_PASSWORD in GitHub Secrets}"
-: "${BEGET_FTP_PATH:?Set BEGET_FTP_PATH to a relative site path ending public_html}"
+# FTP account b2000an4_gh MUST be rooted by its owner in
+# ghleather.ru/public_html via the Beget control panel, never in account /.
+BEGET_FTP_HOST="b2000an4.beget.tech"
+BEGET_FTP_USER="b2000an4_gh"
+BEGET_FTP_PATH="."
+: "${BEGET_FTP_PASSWORD:?Add a GitHub Actions repository secret BEGET_FTP_PASSWORD}"
 
-if [[ ! "$BEGET_FTP_HOST" =~ ^[a-zA-Z0-9][a-zA-Z0-9.-]*$ ]] ||
-   [[ ! "$BEGET_FTP_USER" =~ ^[a-zA-Z0-9_]+$ ]]; then
-    echo "Invalid FTP host/user." >&2; exit 2
-fi
-if [[ "$BEGET_FTP_PATH" == /* ]] ||
-   [[ "$BEGET_FTP_PATH" == *'..'* ]] ||
-   [[ "$BEGET_FTP_PATH" == *' '* ]] ||
-   [[ "$BEGET_FTP_PATH" == *';'* ]] ||
-   [[ ! "$BEGET_FTP_PATH" =~ (^|/)public_html/?$ ]]; then
-    echo "Unsafe destination: expected relative path ending in public_html." >&2; exit 2
-fi
+# No configurable target path: the restricted FTP account opens inside the site.
+# This prevents any automated uploads to another Beget site.
 for file in index.html app.js styles.css; do
     [[ -s "$file" ]] || { echo "Missing $file" >&2; exit 2; }
 done
