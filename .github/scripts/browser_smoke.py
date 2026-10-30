@@ -65,35 +65,43 @@ try:
                     const brand=rect('.navbar .brand-logo');
                     const menu=rect('#menu-toggle-btn');
                     const mainButton=rect('.navbar .desktop-only-btn');
-                    const bottom=rect('.mobile-bottom-bar');
-                    const hero=rect('.hero-title');
+                        const hero=rect('.hero-title');
                     return {
                       topBarHidden:hidden('.top-bar'),
                       fullCTAHidden:hidden('.navbar .desktop-only-btn'),
                       menuDisplayed:!hidden('#menu-toggle-btn'),
-                      bottomDisplayed:!hidden('.mobile-bottom-bar'),
+                      bottomDisplayed:!!document.querySelector('.mobile-bottom-bar') && !hidden('.mobile-bottom-bar'),
+                      headerPosition:getComputedStyle(document.querySelector('.navbar')).position,
+                      yandexBackground:getComputedStyle(document.querySelector('.yandex-badge')).backgroundColor,
                       headerHeight:row.height,
                       rowRight:row.right,
                       brandRight:brand.right,
                       menuLeft:menu.left,
                       menuRight:menu.right,
-                      bottomRight:bottom.right,
-                      bottomLeft:bottom.left,
                       heroWidth:hero.width
                     };
                 }""")
                 assert nav["topBarHidden"] and nav["fullCTAHidden"], f"Mobile header overloaded at {width}: {nav}"
-                assert nav["menuDisplayed"] and nav["bottomDisplayed"], f"Mobile menu/bottom nav not visible {width}: {nav}"
+                assert nav["menuDisplayed"] and not nav["bottomDisplayed"], f"Unwanted mobile bottom overlay at {width}: {nav}"
+                assert nav["headerPosition"] not in ("fixed","sticky"), f"Header obscures page during scroll at {width}: {nav}"
+                assert nav["yandexBackground"] not in ("rgb(255, 204, 0)","rgb(255, 255, 0)"), f"Yellow Yandex badge remains at {width}: {nav}"
                 assert nav["brandRight"] < nav["menuLeft"]+2, f"Brand overlaps menu at {width}: {nav}"
                 assert nav["menuRight"]<=width+2, f"Menu clipped at {width}: {nav}"
                 assert nav["headerHeight"] < 80, f"Mobile navbar is too tall at {width}: {nav}"
-                assert nav["bottomLeft"]>=-2 and nav["bottomRight"]<=width+2, f"Bottom controls overflow at {width}: {nav}"
                 assert nav["heroWidth"] > width*.6, f"Hero text too narrow {width}: {nav}"
-                # On mobile, contact links in the bottom action bar must be
-                # DIRECT links, not a personal-data submission UI.
-                assert page.locator(".mobile-bottom-bar a").count() == 3
-                assert page.locator(".mobile-bottom-bar a[href^='tel:']").count() == 1
-                assert page.locator(".mobile-bottom-bar a[href='#prices']").count() == 1
+                # Direct contact links remain available in the mobile menu.
+                assert page.locator("#mobile-menu a[href^='tel:']").count() >= 1
+                assert page.locator("#mobile-menu a[href^='https://wa.me/']").count() >= 1
+                assert page.locator("#mobile-menu a[href='#prices']").count() >= 1
+                # When scrolled to reviews, neither a fixed top bar nor a
+                # bottom contact bar should cover content.
+                page.get_by_role("heading", name="Отзывы на независимых картах").scroll_into_view_if_needed()
+                scrolled = page.evaluate("""() => ({
+                    navbarBottom: document.querySelector('.navbar').getBoundingClientRect().bottom,
+                    bottomBarCount: document.querySelectorAll('.mobile-bottom-bar').length
+                })""")
+                assert scrolled["navbarBottom"] < 0, f"Mobile navbar remains over reviews at {width}: {scrolled}"
+                assert scrolled["bottomBarCount"] == 0, f"Obstructing mobile bar markup at {width}: {scrolled}"
             if width<=768:
                 page.evaluate("window.scrollTo(0, 0)")
                 page.wait_for_timeout(150)

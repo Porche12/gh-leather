@@ -1448,8 +1448,15 @@ body {
 }
 
 .yandex-badge {
-    background: #FFCC00;
-    color: #1D1B19;
+    background: var(--dark-section-hover);
+    color: var(--dark-text-main);
+    border: 1px solid var(--dark-border);
+    border-radius: 999px;
+    padding: .33rem .65rem;
+    display: inline-flex;
+    align-items: center;
+    font-weight: 650;
+    box-shadow: none;
 }
 
 .gis-badge {
@@ -2902,4 +2909,67 @@ html {
     .hero-buttons > .btn {font-size:.86rem;}
     .luxury-badge {font-size:.69rem;}
     .hero-title {font-size:2rem;}
+}
+
+/* 2026-10-30 — iPhone readability and unobstructed content.
+   Keep the menu on the first screen, but don't pin bars over page content. */
+@media (max-width: 900px) {
+    .navbar {
+        position: relative;
+        top: auto;
+        box-shadow: none;
+        padding: 0;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: var(--bg-main);
+    }
+    .navbar .nav-container {
+        min-height: 58px;
+        padding-block: 8px;
+    }
+    .navbar .brand-logo {
+        max-width: calc(100% - 60px);
+        gap: .6rem;
+    }
+    .navbar .brand-logo .logo-crest {
+        width: 38px;
+        height: 38px;
+        flex: 0 0 38px;
+    }
+    .navbar .logo-title {
+        font-size: clamp(.96rem, 3.7vw, 1.13rem);
+        line-height: 1.12;
+        letter-spacing: .045em;
+    }
+    .navbar .logo-subtitle {
+        font-size: clamp(.47rem, 1.65vw, .55rem);
+        line-height: 1.25;
+        letter-spacing: .055em;
+    }
+    .navbar .mobile-toggle {
+        flex: 0 0 42px;
+        height: 42px;
+        width: 42px;
+        border-radius: 10px;
+    }
+    /* Contact links exist in the menu and in the contacts section;
+       the persistent bar only obstructs the view on mobile Safari. */
+    .mobile-bottom-bar {
+        display: none !important;
+    }
+    body {
+        padding-bottom: 0;
+    }
+    :target {
+        scroll-margin-top: 12px;
+    }
+}
+@media (max-width: 365px) {
+    .navbar .brand-logo .logo-crest {
+        width: 35px;
+        height: 35px;
+        flex-basis: 35px;
+    }
+    .navbar .logo-title { font-size: .91rem; }
+    .navbar .logo-subtitle { font-size: .44rem; }
 }
