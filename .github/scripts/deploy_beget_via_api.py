@@ -67,7 +67,7 @@ def api(section, method, data=None):
     except urllib.error.URLError as exc:
         raise RuntimeError(f"Beget API connection failed ({type(exc.reason).__name__})") from None
     try:
-        if data.startswith(b"\\x1f\\x8b"):
+        if data[:2] == bytes((31, 139)):
             import gzip
             data = gzip.decompress(data)
         answer = json.loads(data.decode("utf-8-sig"))
