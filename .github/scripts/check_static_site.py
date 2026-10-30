@@ -39,8 +39,7 @@ class Parser(HTMLParser):
         if tag=="img":
             self.pictures.append(values.get("src",""))
             assert values.get("alt"), "Missing image alt"
-        if tag in ("script","link") and (values.get("src","").startswith("http") or
-                                      values.get("href","").startswith("http")):
+        if (tag == "script" or (tag == "link" and values.get("rel") in ("stylesheet", "preload", "icon"))) and (values.get("src","").startswith("http") or values.get("href","").startswith("http")):
             self.external.append((tag, values.get("src",values.get("href"))))
         if tag=="a" and values.get("href") in ("", "#"):
             self.empty_links.append(values)
