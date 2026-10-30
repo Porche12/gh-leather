@@ -19,7 +19,7 @@ url=f"http://127.0.0.1:{server.server_port}/index.html"
 try:
     with sync_playwright() as pw:
         browser=pw.chromium.launch(headless=True)
-        for width,height in [(1440,900),(1024,768),(768,1024),(390,844),(320,720)]:
+        for width,height in [(1440,900),(1024,768),(768,1024),(430,932),(390,844),(375,812),(320,720)]:
             page=browser.new_page(viewport={"width":width,"height":height},device_scale_factor=1)
             errors=[]
             offsite=[]
@@ -55,6 +55,45 @@ try:
             assert layout["pageWidth"]<=layout["viewport"]+5, f"Horizontal overflow at {width}: {layout}"
             assert layout["badCards"]==0 and layout["cards"]==6, f"Broken advantage layout at {width}: {layout}"
             assert layout["forms"]==0, f"Privacy regression at {width}: {layout}"
+            # Header regression test: on phones only the brand and menu fit in
+            # the top row. Full contact CTA and info strip must NOT be visible.
+            if width<=900:
+                nav=page.evaluate("""() => {
+                    const rect=selector=>document.querySelector(selector)?.getBoundingClientRect().toJSON();
+                    const hidden=selector=>getComputedStyle(document.querySelector(selector)).display==='none';
+                    const row=rect('.navbar .nav-container');
+                    const brand=rect('.navbar .brand-logo');
+                    const menu=rect('#menu-toggle-btn');
+                    const mainButton=rect('.navbar .desktop-only-btn');
+                    const bottom=rect('.mobile-bottom-bar');
+                    const hero=rect('.hero-title');
+                    return {
+                      topBarHidden:hidden('.top-bar'),
+                      fullCTAHidden:hidden('.navbar .desktop-only-btn'),
+                      menuDisplayed:!hidden('#menu-toggle-btn'),
+                      bottomDisplayed:!hidden('.mobile-bottom-bar'),
+                      headerHeight:row.height,
+                      rowRight:row.right,
+                      brandRight:brand.right,
+                      menuLeft:menu.left,
+                      menuRight:menu.right,
+                      bottomRight:bottom.right,
+                      bottomLeft:bottom.left,
+                      heroWidth:hero.width
+                    };
+                }""")
+                assert nav["topBarHidden"] and nav["fullCTAHidden"], f"Mobile header overloaded at {width}: {nav}"
+                assert nav["menuDisplayed"] and nav["bottomDisplayed"], f"Mobile menu/bottom nav not visible {width}: {nav}"
+                assert nav["brandRight"] < nav["menuLeft"]+2, f"Brand overlaps menu at {width}: {nav}"
+                assert nav["menuRight"]<=width+2, f"Menu clipped at {width}: {nav}"
+                assert nav["headerHeight"] < 80, f"Mobile navbar is too tall at {width}: {nav}"
+                assert nav["bottomLeft"]>=-2 and nav["bottomRight"]<=width+2, f"Bottom controls overflow at {width}: {nav}"
+                assert nav["heroWidth"] > width*.6, f"Hero text too narrow {width}: {nav}"
+                # On mobile, contact links in the bottom action bar must be
+                # DIRECT links, not a personal-data submission UI.
+                assert page.locator(".mobile-bottom-bar a").count() == 3
+                assert page.locator(".mobile-bottom-bar a[href^='tel:']").count() == 1
+                assert page.locator(".mobile-bottom-bar a[href='#prices']").count() == 1
             if width<=768:
                 page.evaluate("window.scrollTo(0, 0)")
                 page.wait_for_timeout(150)
