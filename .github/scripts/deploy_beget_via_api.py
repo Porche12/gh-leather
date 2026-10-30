@@ -81,10 +81,18 @@ def api(section, method, data=None):
             "plain text" if all(32 <= c < 127 or c in (9,10,13) for c in stripped[:100]) else
             "binary/unknown"
         )
+        # An API gateway may reply with a short diagnostic instead of JSON.
+        # Explicitly redact the API credential, account login and long tokens.
+        import re
+        message = data.decode("utf-8", errors="replace").strip()
+        message = message.replace(API_PASSWORD, "[REDACTED_SECRET]")
+        message = message.replace(ACCOUNT, "[REDACTED_LOGIN]")
+        message = re.sub(r"[A-Za-z0-9_+\\/=-]{14,}", "[REDACTED_TOKEN]", message)
+        safe_message = message[:120].replace("\\n", " ")
         raise RuntimeError(
             f"Beget API returned non-JSON for {section}/{method}. "
-            f"HTTP content type={clean_type}, body={body_kind}, bytes={len(data)}. "
-            "Check whether API authentication is enabled in Beget settings."
+            f"HTTP content type={clean_type}, body={body_kind}, bytes={len(data)}, "
+            f"server_message={safe_message!r}."
         ) from None
 
     if answer.get("status") != "success":
