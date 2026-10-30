@@ -1,0 +1,46 @@
+name: Deploy GH-Leather to Beget (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gh-leather-beget
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - name: Checkout GH-Leather
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate comparison photos and local icons
+        run: |
+          python -m pip install --disable-pip-version-check Pillow==11.3.0
+          python .github/scripts/build_demo_before.py
+
+      - name: Validate static website
+        run: |
+          node --check app.js
+          python .github/scripts/check_static_site.py
+
+      - name: Install secure FTP client
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      - name: Publish only GH-Leather to Beget
+        env:
+          BEGET_FTP_HOST: ${{ secrets.BEGET_FTP_HOST }}
+          BEGET_FTP_USER: ${{ secrets.BEGET_FTP_USER }}
+          BEGET_FTP_PASSWORD: ${{ secrets.BEGET_FTP_PASSWORD }}
+          BEGET_FTP_PATH: ${{ secrets.BEGET_FTP_PATH }}
+          BEGET_PUBLIC_URL: ${{ vars.BEGET_PUBLIC_URL }}
+        run: bash .github/scripts/deploy_beget.sh
