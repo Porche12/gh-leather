@@ -45,10 +45,12 @@ def api(section, method, data=None):
     payload = {
         "login": ACCOUNT,
         "passwd": API_PASSWORD,
-        "input_format": "json",
         "output_format": "json",
     }
+    # Read-only getList calls take NO input_data. Beget rejects JSON format
+    # without input_data with 'Cannot parse the JSON input params'.
     if data is not None:
+        payload["input_format"] = "json"
         payload["input_data"] = json.dumps(data, ensure_ascii=False)
     url = f"{API_ROOT}/{section}/{method}"
     request = urllib.request.Request(
