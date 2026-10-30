@@ -223,8 +223,10 @@ set ftp:ssl-force true
 set ftp:ssl-protect-data true
 set ssl:verify-certificate true
 set ftp:passive-mode true
-set net:max-retries 2
-set net:timeout 25
+set ftp:prefer-epsv false
+set ftp:fix-pasv-address true
+set net:max-retries 1
+set net:timeout 12
 cd /
 mirror --reverse --transfer-all --parallel=1 --no-perms --verbose=1 .beget-build .
 get index.html -o .beget-verify.html
