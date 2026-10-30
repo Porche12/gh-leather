@@ -170,23 +170,51 @@ function goToService(itemKey) {
     if (pricing) pricing.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
 }
 
-// ================= Portfolio Case Switcher & Accessible Before/After Slider =================
-
-// Stores the last interaction so automated animation never fights user input.
+// ================= Smooth accessible Before/After comparison =================
+// Drag updates are batched into a single repaint per frame. The two photos
+// stay fixed and only the reveal mask/divider move, avoiding image re-layout.
 let comparisonAnimFrame = null;
+let comparisonPointerFrame = null;
+let comparisonPosition = 50;
+let comparisonQueuedPosition = 50;
 let comparisonHasInteracted = false;
 let comparisonSwitchId = 0;
 
-function setComparisonPosition(position) {
-    const container = document.getElementById('ba-slider');
+function clampComparisonPosition(value) {
+    const number = Number(value);
+    return Number.isFinite(number) ? Math.min(95, Math.max(5, number)) : 50;
+}
+
+function applyComparisonPosition(value) {
+    const slider = document.getElementById('ba-slider');
     const handle = document.getElementById('ba-handle');
-    if (!container || !handle) return;
-    const p = Math.max(3, Math.min(97, Number(position) || 50));
-    const percent = p.toFixed(2) + '%';
-    container.style.setProperty('--clip-pos', percent);
-    handle.style.left = percent;
-    handle.setAttribute('aria-valuenow', Math.round(p));
-    handle.setAttribute('aria-valuetext', Math.round(p) + ' процентов');
+    if (!slider || !handle) return;
+    const position = clampComparisonPosition(value);
+    comparisonPosition = position;
+    comparisonQueuedPosition = position;
+    slider.style.setProperty('--clip-pos', position.toFixed(2) + '%');
+    const rounded = String(Math.round(position));
+    if (handle.getAttribute('aria-valuenow') !== rounded) {
+        handle.setAttribute('aria-valuenow', rounded);
+        handle.setAttribute('aria-valuetext', rounded + ' процентов');
+    }
+}
+
+function queueComparisonPosition(value) {
+    comparisonQueuedPosition = clampComparisonPosition(value);
+    if (comparisonPointerFrame !== null) return;
+    comparisonPointerFrame = requestAnimationFrame(() => {
+        comparisonPointerFrame = null;
+        applyComparisonPosition(comparisonQueuedPosition);
+    });
+}
+
+function flushComparisonPosition() {
+    if (comparisonPointerFrame !== null) {
+        cancelAnimationFrame(comparisonPointerFrame);
+        comparisonPointerFrame = null;
+        applyComparisonPosition(comparisonQueuedPosition);
+    }
 }
 
 function stopComparisonIntro() {
@@ -199,137 +227,151 @@ function stopComparisonIntro() {
     if (hint) hint.classList.add('hidden');
 }
 
-function animateComparison(force) {
-    const container = document.getElementById('ba-slider');
-    if (!container) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (comparisonHasInteracted && !force) return;
-    if (comparisonAnimFrame !== null) cancelAnimationFrame(comparisonAnimFrame);
-    if (force) comparisonHasInteracted = false;
-    // A slow left-right reveal makes the difference clear without endless motion.
-    const points = [[0,50],[500,24],[1450,78],[2250,50]];
-    let start = null;
-    const ease = t => t < .5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
-    function step(time) {
-        if (comparisonHasInteracted) { comparisonAnimFrame = null; return; }
-        if (start === null) start = time;
-        const elapsed = Math.min(2250, time - start);
+function animateComparison() {
+    stopComparisonIntro();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        applyComparisonPosition(50);
+        return;
+    }
+    flushComparisonPosition();
+    const points = [[0, 50], [550, 23], [1600, 77], [2400, 50]];
+    const ease = t => t * t * (3 - 2 * t);
+    let origin = null;
+    function frame(timestamp) {
+        if (origin === null) origin = timestamp;
+        const time = Math.min(2400, timestamp - origin);
         let position = 50;
-        for (let i = 1; i < points.length; i++) {
-            if (elapsed <= points[i][0]) {
-                const [t0, x0] = points[i-1], [t1,x1] = points[i];
-                position = x0 + (x1-x0)*ease((elapsed-t0)/(t1-t0));
+        for (let index = 1; index < points.length; index++) {
+            if (time <= points[index][0]) {
+                const [previousTime, previousPosition] = points[index - 1];
+                const [nextTime, nextPosition] = points[index];
+                const progress = (time - previousTime) / (nextTime - previousTime);
+                position = previousPosition + (nextPosition - previousPosition) * ease(progress);
                 break;
             }
         }
-        setComparisonPosition(position);
-        if (elapsed < 2250) comparisonAnimFrame = requestAnimationFrame(step);
-        else { comparisonAnimFrame = null; setComparisonPosition(50); }
+        applyComparisonPosition(position);
+        if (time < 2400) {
+            comparisonAnimFrame = requestAnimationFrame(frame);
+        } else {
+            comparisonAnimFrame = null;
+            applyComparisonPosition(50);
+        }
     }
-    comparisonAnimFrame = requestAnimationFrame(step);
+    comparisonAnimFrame = requestAnimationFrame(frame);
 }
 
-function switchPortfolioCase(caseType, btnEl) {
-    const data = PORTFOLIO_CASES[caseType] || PORTFOLIO_CASES.jacket;
-    document.querySelectorAll('#portfolio-tabs .tab-btn').forEach(b => {
-        const selected = b === btnEl;
-        b.classList.toggle('active', selected);
-        b.setAttribute('aria-pressed', String(selected));
-    });
-    const container = document.getElementById('ba-slider');
-    const titleEl = document.getElementById('case-title');
-    const initEl = document.getElementById('case-before-desc');
-    const workEl = document.getElementById('case-after-desc');
-    const fullDescEl = document.getElementById('case-full-desc');
-    const imgBefore = document.getElementById('ba-img-before');
-    const imgAfter = document.getElementById('ba-img-after');
-
-    // Actual before-and-after photographs supplied by third-party ateliers.
-    const switching = ++comparisonSwitchId;
-    const newBefore = new Image();
-    const newAfter = new Image();
-    const load = (img, src) => new Promise(resolve => {
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = src;
-    });
-    Promise.all([load(newBefore, data.beforeImg), load(newAfter, data.afterImg)]).then(([beforeReady, afterReady]) => {
-        if (switching !== comparisonSwitchId || !afterReady) return;
-        if (imgAfter) imgAfter.src = data.afterImg;
-        if (imgBefore) imgBefore.src = beforeReady ? data.beforeImg : data.afterImg;
-        if (container) container.style.setProperty('--ba-preview-image', "url('" + data.afterImg + "')");
-        if (titleEl) titleEl.textContent = "Пример: " + data.label;
-        if (initEl) initEl.textContent = data.initialDamage;
-        if (workEl) workEl.textContent = data.workDone;
-        if (fullDescEl) fullDescEl.textContent = 'Демонстрационная визуализация, не фотография выполненного заказа. ' + data.workDone;
-        setComparisonPosition(50);
-        animateComparison(true);
+// Switch only after both photos are decoded. No automatic animation competes
+// with touches; the "Сравнить снова" control starts animation on demand.
+function switchPortfolioCase(caseType, button) {
+    const data = PORTFOLIO_CASES[caseType];
+    if (!data) return;
+    const version = ++comparisonSwitchId;
+    const before = document.getElementById('ba-img-before');
+    const after = document.getElementById('ba-img-after');
+    const slider = document.getElementById('ba-slider');
+    if (!before || !after || !slider) return;
+    stopComparisonIntro();
+    const load = source => {
+        const photo = new Image();
+        photo.decoding = 'async';
+        photo.src = source;
+        if (typeof photo.decode === 'function') {
+            return photo.decode().then(() => true).catch(() => false);
+        }
+        return new Promise(resolve => {
+            if (photo.complete) { resolve(photo.naturalWidth > 0); return; }
+            photo.onload = () => resolve(true);
+            photo.onerror = () => resolve(false);
+        });
+    };
+    Promise.all([load(data.beforeImg), load(data.afterImg)]).then(([beforeOK, afterOK]) => {
+        if (version !== comparisonSwitchId || !beforeOK || !afterOK) return;
+        before.src = data.beforeImg;
+        after.src = data.afterImg;
+        before.alt = 'Изделие до реставрации: ' + data.label.toLowerCase();
+        after.alt = 'Изделие после реставрации: ' + data.label.toLowerCase();
+        slider.style.setProperty('--ba-preview-image', 'url("' + data.afterImg + '")');
+        document.querySelectorAll('#portfolio-tabs .tab-btn').forEach(tab => {
+            const selected = tab === button || tab.dataset.case === caseType;
+            tab.classList.toggle('active', selected);
+            tab.setAttribute('aria-pressed', String(selected));
+        });
+        applyComparisonPosition(50);
     });
 }
 
 function initBeforeAfterSlider() {
-    const container = document.getElementById('ba-slider');
+    const slider = document.getElementById('ba-slider');
     const handle = document.getElementById('ba-handle');
-    if (!container || !handle) return;
+    if (!slider || !handle) return;
     let activePointerId = null;
+    let dragBounds = null;
 
-    function updateFromPointer(event) {
-        const rect = container.getBoundingClientRect();
-        if (!rect.width) return;
-        setComparisonPosition((event.clientX-rect.left)/rect.width*100);
+    function positionFrom(event) {
+        if (!dragBounds || dragBounds.width <= 0) return;
+        // Coalesced events provide the freshest touch/mouse coordinate.
+        const coalesced = event.getCoalescedEvents?.();
+        const last = coalesced && coalesced.length ? coalesced[coalesced.length - 1] : event;
+        queueComparisonPosition((last.clientX - dragBounds.left) / dragBounds.width * 100);
     }
-
-    container.addEventListener('pointerdown', event => {
-        if (event.pointerType === 'mouse' && event.button !== 0) return;
+    slider.addEventListener('pointerdown', event => {
+        if (activePointerId !== null || (event.pointerType === 'mouse' && event.button !== 0)) return;
         stopComparisonIntro();
+        flushComparisonPosition();
+        dragBounds = slider.getBoundingClientRect(); // layout read only once
         activePointerId = event.pointerId;
-        if (container.setPointerCapture) container.setPointerCapture(event.pointerId);
-        updateFromPointer(event);
+        slider.classList.add('is-dragging');
+        try { slider.setPointerCapture(event.pointerId); } catch (_) {}
+        positionFrom(event);
     });
-    container.addEventListener('pointermove', event => {
+    slider.addEventListener('pointermove', event => {
         if (activePointerId !== event.pointerId) return;
-        updateFromPointer(event);
+        positionFrom(event); // one DOM write at most per animation frame
+    }, { passive: true });
+
+    function endPointer(event) {
+        if (activePointerId !== event.pointerId) return;
+        if (event.type === 'pointerup') positionFrom(event);
+        flushComparisonPosition();
+        activePointerId = null;
+        dragBounds = null;
+        slider.classList.remove('is-dragging');
+        if (slider.hasPointerCapture?.(event.pointerId)) {
+            try { slider.releasePointerCapture(event.pointerId); } catch (_) {}
+        }
+    }
+    slider.addEventListener('pointerup', endPointer);
+    slider.addEventListener('pointercancel', endPointer);
+    slider.addEventListener('lostpointercapture', event => {
+        if (activePointerId === event.pointerId) {
+            flushComparisonPosition();
+            activePointerId = null;
+            dragBounds = null;
+            slider.classList.remove('is-dragging');
+        }
     });
-    const release = event => {
-        if (activePointerId === event.pointerId) activePointerId = null;
-    };
-    container.addEventListener('pointerup', release);
-    container.addEventListener('pointercancel', release);
-    container.addEventListener('lostpointercapture', () => { activePointerId = null; });
+
     handle.addEventListener('keydown', event => {
-        const p = Number(handle.getAttribute('aria-valuenow') || 50);
-        const next = event.key === 'ArrowLeft' ? p-5
-            : event.key === 'ArrowRight' ? p+5
-            : event.key === 'Home' ? 3
-            : event.key === 'End' ? 97 : null;
+        const next = event.key === 'ArrowLeft' ? comparisonPosition - 5
+            : event.key === 'ArrowRight' ? comparisonPosition + 5
+            : event.key === 'Home' ? 5
+            : event.key === 'End' ? 95 : null;
         if (next === null) return;
         event.preventDefault();
         stopComparisonIntro();
-        setComparisonPosition(next);
+        flushComparisonPosition();
+        applyComparisonPosition(next);
     });
-    document.getElementById('ba-animate-button')?.addEventListener('click', () => {
-        const hint = document.getElementById('ba-swipe-hint');
-        if (hint) hint.classList.remove('hidden');
-        animateComparison(true);
-    });
-
-    // Keep a graceful fallback if a generated image is temporarily missing.
+    document.getElementById('ba-animate-button')?.addEventListener('click', animateComparison);
     const before = document.getElementById('ba-img-before');
     const after = document.getElementById('ba-img-after');
-    if (before && after) before.addEventListener('error', () => {
-        if (before.src !== after.src) before.src = after.src;
-    });
-
-    setComparisonPosition(50);
-    if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver(entries => {
-            if (entries.some(entry => entry.isIntersecting)) {
-                observer.disconnect();
-                animateComparison(false);
-            }
-        }, { threshold: 0.35 });
-        observer.observe(container);
+    if (before && after) {
+        before.addEventListener('error', () => {
+            if (before.src !== after.src) before.src = after.src;
+        });
     }
+    applyComparisonPosition(50);
 }
 
 function toggleMobileMenu() {
