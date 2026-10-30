@@ -1,0 +1,65 @@
+name: Download-ready GH-Leather site for Beget
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/package-beget-site.yml"
+      - ".github/scripts/build_demo_before.py"
+      - "index.html"
+      - "styles.css"
+      - "app.js"
+      - "images/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout current website
+        uses: actions/checkout@v4
+
+      - name: Install Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate images and local icons
+        run: |
+          python -m pip install --disable-pip-version-check Pillow==11.3.0
+          python .github/scripts/build_demo_before.py
+
+      - name: Validate and package standalone website
+        run: |
+          python .github/scripts/check_static_site.py
+          node --check app.js
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+          root = Path('.')
+          files = [root / x for x in ('index.html', 'styles.css', 'app.js')]
+          files += sorted(p for p in (root / 'images').rglob('*') if p.is_file())
+          assert len(files) >= 10, 'Expected assets missing'
+          assert (root / 'images/lucide.min.js').is_file()
+          with ZipFile('GH-Leather-For-Beget.zip', 'w', compression=ZIP_DEFLATED, compresslevel=7) as target:
+              for file in files:
+                  target.write(file, file.as_posix())
+          with ZipFile('GH-Leather-For-Beget.zip') as target:
+              assert target.testzip() is None
+              assert all(not n.startswith('/') and '..' not in Path(n).parts for n in target.namelist())
+              assert 'index.html' in target.namelist()
+              print('Packaged:', len(target.namelist()), 'files')
+          print('ZIP size:', Path('GH-Leather-For-Beget.zip').stat().st_size)
+          PY
+
+      - name: Upload complete site ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: GH-Leather-Beget-Upload
+          path: GH-Leather-For-Beget.zip
+          retention-days: 30
+          if-no-files-found: error
