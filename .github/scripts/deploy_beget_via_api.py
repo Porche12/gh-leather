@@ -201,71 +201,69 @@ def assets_to_upload():
 
 
 def upload(ftp_password):
-    assets = assets_to_upload()
-    tls = ssl.create_default_context()
-    ftp = None
-    for attempt in range(4):
-        try:
-            print(f"FTPS connection attempt {attempt + 1}/4", flush=True)
-            ftp = ftplib.FTP_TLS(context=tls, timeout=35)
-            ftp.connect(FTP_SERVER, 21, timeout=35)
-            ftp.login(FTP_USER, ftp_password)
-            ftp.prot_p()
-            print("FTPS login and encrypted data channel established", flush=True)
-            break
-        except (OSError, ftplib.Error) as exc:
-            if ftp is not None:
-                try:
-                    ftp.close()
-                except OSError:
-                    pass
-            ftp = None
-            if attempt == 3:
-                raise RuntimeError(
-                    "FTPS connection/login failed after account creation: "
-                    + type(exc).__name__
-                ) from None
-            time.sleep(5)
-    assert ftp is not None
+    """Use lftp's FTPS data channel to avoid Python ftplib EOF on Beget STOR."""
+    import shutil
+    import subprocess
 
-    # The additional FTP user can access ONLY SITE_PATH, as verified by API.
-    # Beget FTP chroots scoped users into their home directory.
+    assets = assets_to_upload()
+    staging = ROOT / ".beget-build"
+    staging.mkdir(exist_ok=True)
+    revision_marker = f'<meta name="gh-leather-beget-version" content="{BUILD_SHA}">'
+    for asset in assets:
+        relative = asset.relative_to(ROOT)
+        target = staging / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        data = asset.read_bytes()
+        if relative.as_posix() == "index.html":
+            data = data.replace(b"</head>", revision_marker.encode() + b"\n</head>", 1)
+        target.write_bytes(data)
+
+    commands = """set cmd:fail-exit true
+set ftp:ssl-force true
+set ftp:ssl-protect-data true
+set ssl:verify-certificate true
+set ftp:passive-mode true
+set net:max-retries 2
+set net:timeout 25
+cd /
+mirror --reverse --transfer-all --parallel=1 --no-perms --verbose=1 .beget-build .
+get index.html -o .beget-verify.html
+bye
+"""
+    env = os.environ.copy()
+    env["LFTP_PASSWORD"] = ftp_password
+    env.pop("BEGET_API_PASSWORD", None)
+    print("Starting verified TLS-only lftp upload", flush=True)
     try:
-        ftp.cwd("/")
-        print("Restricted FTP home is writable; starting upload", flush=True)
-        uploaded = 0
-        for asset in assets:
-            relative = asset.relative_to(ROOT)
-            print(f"FTPS uploading: {relative.as_posix()}", flush=True)
-            parts = relative.parts
-            ftp.cwd("/")
-            for part in parts[:-1]:
-                try:
-                    ftp.mkd(part)
-                except ftplib.error_perm:
-                    pass
-                ftp.cwd(part)
-            raw = asset.read_bytes()
-            if relative.as_posix() == "index.html":
-                # Identify exactly which commit was deployed, without external tracking.
-                raw = raw.replace(
-                    b"</head>",
-                    f'<meta name="gh-leather-beget-version" content="{BUILD_SHA}">\n</head>'.encode(),
-                    1
-                )
-            ftp.storbinary(f"STOR {parts[-1]}", io.BytesIO(raw), blocksize=65536)
-            if relative.as_posix() in ("index.html", "app.js", "styles.css"):
-                received = bytearray()
-                ftp.retrbinary(f"RETR {parts[-1]}", received.extend, blocksize=65536)
-                if hashlib.sha256(received).digest() != hashlib.sha256(raw).digest():
-                    raise RuntimeError(f"FTPS byte verification failed: {relative}")
-            uploaded += 1
-        print(f"Uploaded {uploaded} GH-Leather static files; remote HTML/CSS/JS verified.")
-    finally:
-        try:
-            ftp.quit()
-        except (OSError, ftplib.Error):
-            ftp.close()
+        process = subprocess.run(
+            ["lftp", "--norc", "--env-password", "--user", FTP_USER,
+             "ftp://" + FTP_SERVER],
+            input=commands,
+            capture_output=True,
+            text=True,
+            timeout=240,
+            env=env,
+            cwd=str(ROOT),
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        raise RuntimeError("Encrypted FTPS upload timed out") from None
+
+    if process.returncode != 0:
+        # Do not output untrusted raw FTP server logs, which may contain paths.
+        msg = "FTP server rejected transfer or verification command"
+        if "certificate" in (process.stderr or "").lower():
+            msg = "FTPS certificate verification failed"
+        elif "permission denied" in (process.stderr or "").lower():
+            msg = "FTP write permission denied"
+        elif "550" in (process.stderr or ""):
+            msg = "Beget FTP server returned 550 (path/permission error)"
+        raise RuntimeError(f"lftp upload failed (exit={process.returncode}): {msg}")
+
+    verify = ROOT / ".beget-verify.html"
+    if not verify.is_file() or hashlib.sha256(verify.read_bytes()).digest() != hashlib.sha256((staging / "index.html").read_bytes()).digest():
+        raise RuntimeError("FTPS upload finished but remote index.html checksum mismatch")
+    print(f"Transferred and verified {len(assets)} GH-Leather files over explicit FTPS")
 
 
 def public_check():
