@@ -1,0 +1,39 @@
+name: Deploy GH-Leather to PythonAnywhere
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "styles.css"
+      - "app.js"
+      - "images/**"
+      - ".github/scripts/deploy_gh_leather_pa.py"
+      - ".github/workflows/deploy-gh-leather-pythonanywhere.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gh-leather-pythonanywhere
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Upload only GH-Leather static assets
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout site
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Upload and verify
+        env:
+          PA_API_TOKEN: ${{ secrets.PA_API_TOKEN }}
+        run: python .github/scripts/deploy_gh_leather_pa.py
