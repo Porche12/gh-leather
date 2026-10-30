@@ -40,6 +40,9 @@ jobs:
           python .github/scripts/check_static_site.py
           node --check app.js
 
+      - name: Install FTPS transfer client
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
       - name: Confirm domain and upload to Beget with scoped API-generated FTP
         env:
           BEGET_API_PASSWORD: ${{ secrets.BEGET_API_PASSWORD }}
