@@ -63,9 +63,9 @@
 
     <!-- Lucide Icons -->
     <script defer src="images/lucide.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20261030-mobile2">
 </head>
-<body>
+<body id="top">
 
     <!-- Top Info Bar -->
     <div class="top-bar">
@@ -85,7 +85,7 @@
     <!-- Main Navigation Header (Compact Sticky) -->
     <header class="navbar" id="navbar">
         <div class="container nav-container">
-            <a href="#" class="brand-logo">
+            <a href="#top" class="brand-logo" aria-label="GH-Leather — к началу страницы">
                 <div class="logo-crest"><span class="logo-initials">GH</span></div>
                 <div class="logo-text-group">
                     <span class="logo-title">GH-LEATHER</span>
@@ -106,7 +106,7 @@
                 <a href="#contacts" class="btn btn-luxury desktop-only-btn">
                     <i data-lucide="message-circle"></i> Связаться с мастером
                 </a>
-                <button class="mobile-toggle" id="menu-toggle-btn" aria-label="Открыть мобильное меню" onclick="toggleMobileMenu()">
+                <button class="mobile-toggle" id="menu-toggle-btn" type="button" aria-label="Открыть меню" aria-controls="mobile-menu" aria-expanded="false" onclick="toggleMobileMenu()">
                     <i data-lucide="menu"></i>
                 </button>
             </div>
@@ -680,10 +680,7 @@
             <i data-lucide="message-circle"></i>
             <span>WhatsApp</span>
         </a>
-        <a href="#contacts" class="m-bottom-btn m-btn-action">
-            <i data-lucide="message-circle"></i>
-            <span>Контакты</span>
-        </a>
+        <a href="#prices" class="m-bottom-btn m-btn-action" aria-label="Открыть калькулятор цен"><i data-lucide="calculator"></i><span>Цены</span></a>
     </aside>
 
     <!-- Toast Notifications Container -->
@@ -729,6 +726,6 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="app.js"></script>
+    <script src="app.js?v=20261030-mobile2"></script>
 </body>
 </html>
