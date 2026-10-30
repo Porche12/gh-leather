@@ -8,33 +8,69 @@ on:
       - ".github/scripts/point-beget-dns-to-github-pages.py"
       - ".github/workflows/point-beget-domain-to-pages.yml"
   workflow_dispatch:
+  schedule:
+    - cron: '19 */2 * * *'
 
 permissions:
   contents: read
+  pages: read
+
+concurrency:
+  group: ghleather-domain-dns
+  cancel-in-progress: false
 
 jobs:
   beget-dns:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate custom-domain configuration
+      - name: Validate domain configuration
         run: |
           test "$(cat CNAME)" = "ghleather.ru"
           python -m py_compile .github/scripts/point-beget-dns-to-github-pages.py
-      - name: Check public domain delegation
+      - name: Install DNS verification tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq dnsutils
+      - name: Confirm registry delegation
+        id: registry
+        shell: bash
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq dnsutils
-          echo "Public NS records:"
-          dig +short NS ghleather.ru @1.1.1.1 || true
-          echo "Public root A records:"
-          dig +short A ghleather.ru @1.1.1.1 || true
-
-      - name: Update only ghleather.ru root A records
+          echo "Nameservers from public DNS:"
+          dig +noall +answer NS ghleather.ru @1.1.1.1 || true
+          nameservers="$(dig +short NS ghleather.ru @1.1.1.1 | tr -d '\r')"
+          if [ -z "$nameservers" ]; then
+            echo "delegated=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::ghleather.ru has no public NS delegation. Waiting on domain registry publication."
+          else
+            echo "delegated=true" >> "$GITHUB_OUTPUT"
+            echo "Public NS delegation found:"
+            echo "$nameservers"
+          fi
+      - name: Configure GitHub Pages A records without touching mail
+        if: steps.registry.outputs.delegated == 'true'
         env:
           BEGET_API_PASSWORD: ${{ secrets.BEGET_API_PASSWORD }}
         run: python .github/scripts/point-beget-dns-to-github-pages.py
+      - name: Check public DNS and GitHub Pages
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Public A records:"
+          dig +short A ghleather.ru @1.1.1.1 || true
+          echo "GitHub Pages certificate status:"
+          curl -fsSL --max-time 20 \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
+          | python -c 'import json,sys; d=json.load(sys.stdin); c=d.get("https_certificate") or {}; print("domain="+str(d.get("cname"))+"; status="+str(d.get("status"))+"; HTTPS enforced="+str(d.get("https_enforced"))+"; certificate="+str(c.get("state","not issued")))'
+          echo "Public HTTPS:"
+          if curl -fsSL --max-time 15 https://ghleather.ru/ -o /tmp/ghleather-live.html \
+               && grep -qi 'GH-Leather' /tmp/ghleather-live.html; then
+            echo "LIVE: https://ghleather.ru/"
+          else
+            echo "::warning::HTTPS not yet available. Domain registry or GitHub Pages TLS issuance pending."
+          fi
