@@ -56,6 +56,8 @@ try:
             assert layout["badCards"]==0 and layout["cards"]==6, f"Broken advantage layout at {width}: {layout}"
             assert layout["forms"]==0, f"Privacy regression at {width}: {layout}"
             if width<=768:
+                page.evaluate("window.scrollTo(0, 0)")
+                page.wait_for_timeout(150)
                 page.locator("#menu-toggle-btn").click()
                 assert "open" in page.locator("#mobile-menu").get_attribute("class"), "Menu did not open"
                 page.locator("#mobile-menu .mobile-nav-links a").first.click()
