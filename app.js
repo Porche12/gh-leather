@@ -96,16 +96,16 @@ const CALCULATOR_DATA = {
 const PORTFOLIO_CASES = {
     jacket: {
         label: 'Куртка',
-        initialDamage: 'Смоделированные потёртости и потеря насыщенности цвета на одной и той же куртке.',
-        workDone: 'Визуализация возможного эффекта восстановления цвета и фактуры.',
-        beforeImg: 'images/jacket_after.jpg',
+        initialDamage: 'Модельные потертости, частичная потеря цвета и следы эксплуатации на кожаной куртке.',
+        workDone: 'Та же куртка без смоделированного износа: восстановленная насыщенность и внешний вид.',
+        beforeImg: 'images/demo_jacket_before.jpg',
         afterImg: 'images/jacket_after.jpg'
     },
     bag: {
         label: 'Сумка',
-        initialDamage: 'Моделирование потёртостей и выцветания на той же самой сумке.',
-        workDone: 'Визуализация возможного результата после чистки и окрашивания.',
-        beforeImg: 'images/bag_after.jpg',
+        initialDamage: 'Визуализация потёртостей по краям, пятен и естественного износа этой же сумки.',
+        workDone: 'Та же сумка без смоделированных потертостей и пятен.',
+        beforeImg: 'images/demo_bag_before.jpg',
         afterImg: 'images/bag_after.jpg'
     },
     fur: {
@@ -736,13 +736,73 @@ function goToService(itemKey) {
     if (pricing) pricing.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
 }
 
-// ================= Portfolio Case Switcher & Before/After Slider =================
+// ================= Portfolio Case Switcher & Accessible Before/After Slider =================
+
+// Stores the last interaction so automated animation never fights user input.
+let comparisonAnimFrame = null;
+let comparisonHasInteracted = false;
+let comparisonSwitchId = 0;
+
+function setComparisonPosition(position) {
+    const container = document.getElementById('ba-slider');
+    const handle = document.getElementById('ba-handle');
+    if (!container || !handle) return;
+    const p = Math.max(3, Math.min(97, Number(position) || 50));
+    const percent = p.toFixed(2) + '%';
+    container.style.setProperty('--clip-pos', percent);
+    handle.style.left = percent;
+    handle.setAttribute('aria-valuenow', Math.round(p));
+    handle.setAttribute('aria-valuetext', Math.round(p) + ' процентов');
+}
+
+function stopComparisonIntro() {
+    comparisonHasInteracted = true;
+    if (comparisonAnimFrame !== null) {
+        cancelAnimationFrame(comparisonAnimFrame);
+        comparisonAnimFrame = null;
+    }
+    const hint = document.getElementById('ba-swipe-hint');
+    if (hint) hint.classList.add('hidden');
+}
+
+function animateComparison(force) {
+    const container = document.getElementById('ba-slider');
+    if (!container) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (comparisonHasInteracted && !force) return;
+    if (comparisonAnimFrame !== null) cancelAnimationFrame(comparisonAnimFrame);
+    if (force) comparisonHasInteracted = false;
+    // A slow left-right reveal makes the difference clear without endless motion.
+    const points = [[0,50],[500,24],[1450,78],[2250,50]];
+    let start = null;
+    const ease = t => t < .5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+    function step(time) {
+        if (comparisonHasInteracted) { comparisonAnimFrame = null; return; }
+        if (start === null) start = time;
+        const elapsed = Math.min(2250, time - start);
+        let position = 50;
+        for (let i = 1; i < points.length; i++) {
+            if (elapsed <= points[i][0]) {
+                const [t0, x0] = points[i-1], [t1,x1] = points[i];
+                position = x0 + (x1-x0)*ease((elapsed-t0)/(t1-t0));
+                break;
+            }
+        }
+        setComparisonPosition(position);
+        if (elapsed < 2250) comparisonAnimFrame = requestAnimationFrame(step);
+        else { comparisonAnimFrame = null; setComparisonPosition(50); }
+    }
+    comparisonAnimFrame = requestAnimationFrame(step);
+}
 
 function switchPortfolioCase(caseType, btnEl) {
-    document.querySelectorAll('.category-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-    if (btnEl) btnEl.classList.add('active');
-
-    const data = PORTFOLIO_CASES[caseType] || PORTFOLIO_CASES['jacket'];
+    const data = PORTFOLIO_CASES[caseType] || PORTFOLIO_CASES.jacket;
+    document.querySelectorAll('#portfolio-tabs .tab-btn').forEach(b => {
+        const selected = b === btnEl;
+        b.classList.toggle('active', selected);
+        b.setAttribute('aria-pressed', String(selected));
+    });
+    const container = document.getElementById('ba-slider');
     const titleEl = document.getElementById('case-title');
     const initEl = document.getElementById('case-before-desc');
     const workEl = document.getElementById('case-after-desc');
@@ -750,59 +810,94 @@ function switchPortfolioCase(caseType, btnEl) {
     const imgBefore = document.getElementById('ba-img-before');
     const imgAfter = document.getElementById('ba-img-after');
 
-    if (titleEl) titleEl.textContent = "Пример: " + data.label;
-    if (initEl) initEl.textContent = data.initialDamage;
-    if (workEl) workEl.textContent = data.workDone;
-    if (fullDescEl) fullDescEl.textContent = "Демонстрационное сравнение (не фото завершённого заказа): " + data.workDone;
-    if (imgBefore && data.beforeImg) imgBefore.src = data.beforeImg;
-    if (imgAfter && data.afterImg) imgAfter.src = data.afterImg;
-
-    // Reset handle position to 50%
-    const container = document.getElementById('ba-slider');
-    const handle = document.getElementById('ba-handle');
-    if (container) container.style.setProperty('--clip-pos', '50%');
-    if (handle) { handle.style.left = '50%'; handle.setAttribute('aria-valuenow', '50'); handle.setAttribute('aria-valuetext', '50 процентов'); }
+    // The images are generated from the exact same source. Do not switch
+    // to independent stock photography, which breaks alignment.
+    const switching = ++comparisonSwitchId;
+    const newBefore = new Image();
+    const newAfter = new Image();
+    const load = (img, src) => new Promise(resolve => {
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = src;
+    });
+    Promise.all([load(newBefore, data.beforeImg), load(newAfter, data.afterImg)]).then(([beforeReady, afterReady]) => {
+        if (switching !== comparisonSwitchId || !afterReady) return;
+        if (imgAfter) imgAfter.src = data.afterImg;
+        if (imgBefore) imgBefore.src = beforeReady ? data.beforeImg : data.afterImg;
+        if (container) container.style.setProperty('--ba-preview-image', "url('" + data.afterImg + "')");
+        if (titleEl) titleEl.textContent = "Пример: " + data.label;
+        if (initEl) initEl.textContent = data.initialDamage;
+        if (workEl) workEl.textContent = data.workDone;
+        if (fullDescEl) fullDescEl.textContent = 'Демонстрационная визуализация, не фотография выполненного заказа. ' + data.workDone;
+        setComparisonPosition(50);
+        animateComparison(true);
+    });
 }
 
 function initBeforeAfterSlider() {
     const container = document.getElementById('ba-slider');
     const handle = document.getElementById('ba-handle');
     if (!container || !handle) return;
-    let dragging = false;
-    function update(position) {
-        const p = Math.max(5, Math.min(95, position));
-        const value = p.toFixed(1);
-        container.style.setProperty('--clip-pos', value + '%');
-        handle.style.left = value + '%';
-        handle.setAttribute('aria-valuenow', Math.round(p));
-        handle.setAttribute('aria-valuetext', Math.round(p) + ' процентов');
-    }
-    function fromPointer(e) {
+    let activePointerId = null;
+
+    function updateFromPointer(event) {
         const rect = container.getBoundingClientRect();
-        update(((e.clientX - rect.left) / rect.width) * 100);
+        if (!rect.width) return;
+        setComparisonPosition((event.clientX-rect.left)/rect.width*100);
     }
-    container.addEventListener('pointerdown', (e) => {
-        if (e.pointerType === 'mouse' && e.button !== 0) return;
-        dragging = true;
-        if (container.setPointerCapture) container.setPointerCapture(e.pointerId);
-        fromPointer(e);
+
+    container.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        stopComparisonIntro();
+        activePointerId = event.pointerId;
+        if (container.setPointerCapture) container.setPointerCapture(event.pointerId);
+        updateFromPointer(event);
     });
-    container.addEventListener('pointermove', (e) => { if (dragging) fromPointer(e); });
-    container.addEventListener('pointerup', () => { dragging = false; });
-    container.addEventListener('pointercancel', () => { dragging = false; });
-    handle.addEventListener('keydown', (e) => {
-        let value = parseFloat(handle.getAttribute('aria-valuenow')) || 50;
-        if (e.key === 'ArrowLeft') value -= 5;
-        else if (e.key === 'ArrowRight') value += 5;
-        else if (e.key === 'Home') value = 5;
-        else if (e.key === 'End') value = 95;
-        else return;
-        e.preventDefault();
-        update(value);
+    container.addEventListener('pointermove', event => {
+        if (activePointerId !== event.pointerId) return;
+        updateFromPointer(event);
     });
+    const release = event => {
+        if (activePointerId === event.pointerId) activePointerId = null;
+    };
+    container.addEventListener('pointerup', release);
+    container.addEventListener('pointercancel', release);
+    container.addEventListener('lostpointercapture', () => { activePointerId = null; });
+    handle.addEventListener('keydown', event => {
+        const p = Number(handle.getAttribute('aria-valuenow') || 50);
+        const next = event.key === 'ArrowLeft' ? p-5
+            : event.key === 'ArrowRight' ? p+5
+            : event.key === 'Home' ? 3
+            : event.key === 'End' ? 97 : null;
+        if (next === null) return;
+        event.preventDefault();
+        stopComparisonIntro();
+        setComparisonPosition(next);
+    });
+    document.getElementById('ba-animate-button')?.addEventListener('click', () => {
+        const hint = document.getElementById('ba-swipe-hint');
+        if (hint) hint.classList.remove('hidden');
+        animateComparison(true);
+    });
+
+    // Keep a graceful fallback if a generated image is temporarily missing.
+    const before = document.getElementById('ba-img-before');
+    const after = document.getElementById('ba-img-after');
+    if (before && after) before.addEventListener('error', () => {
+        if (before.src !== after.src) before.src = after.src;
+    });
+
+    setComparisonPosition(50);
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(entries => {
+            if (entries.some(entry => entry.isIntersecting)) {
+                observer.disconnect();
+                animateComparison(false);
+            }
+        }, { threshold: 0.35 });
+        observer.observe(container);
+    }
 }
-
-
 
 function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
