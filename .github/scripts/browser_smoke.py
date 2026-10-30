@@ -41,6 +41,34 @@ try:
             page.locator("#ba-handle").focus()
             page.keyboard.press("ArrowLeft")
             assert int(page.locator("#ba-handle").get_attribute("aria-valuenow"))<50, "Keyboard slider failed"
+            # Verify real pointer dragging moves the divider in both directions,
+            # with no overlay, stuck pointer capture or photo relayout.
+            track = page.locator("#ba-slider").bounding_box()
+            cy = track["y"] + track["height"] * .53
+            page.mouse.move(track["x"] + track["width"] * .5, cy)
+            page.mouse.down()
+            page.mouse.move(track["x"] + track["width"] * .83, cy, steps=13)
+            page.wait_for_timeout(85)
+            right = page.locator("#ba-handle").get_attribute("aria-valuenow")
+            assert 74 <= int(right) <= 90, f"Slider right drag failed at {width}: {right}"
+            page.mouse.move(track["x"] + track["width"] * .2, cy, steps=13)
+            page.mouse.up()
+            page.wait_for_timeout(85)
+            left = page.locator("#ba-handle").get_attribute("aria-valuenow")
+            assert 14 <= int(left) <= 27, f"Slider left drag failed at {width}: {left}"
+            actual = page.evaluate("""() => ({
+                position: document.getElementById('ba-slider').style.getPropertyValue('--clip-pos'),
+                dragging: document.getElementById('ba-slider').classList.contains('is-dragging'),
+                before: document.getElementById('ba-img-before').getBoundingClientRect().toJSON(),
+                after: document.getElementById('ba-img-after').getBoundingClientRect().toJSON(),
+                blur: getComputedStyle(document.querySelector('.ba-layer'), '::before').content
+            })""")
+            assert not actual["dragging"], f"Slider pointer was not released at {width}"
+            assert abs(float(actual["position"].strip("%")) - int(left)) < 1.1, f"Clip/handle out of sync at {width}: {actual}"
+            assert actual["before"]["width"] == actual["after"]["width"], f"Comparison photo width changed at {width}: {actual}"
+            assert actual["blur"] in ("none", "normal"), f"Expensive blur overlay still active: {actual['blur']}"
+            assert page.get_by_role("heading", name="Как проходит работа").count() == 0, "Removed workflow heading still present"
+            assert page.locator(".workflow-steps").count() == 0, "Removed workflow block still present"
             layout=page.evaluate("""() => {
                 const cards=[...document.querySelectorAll('.adv-card')];
                 const bad=cards.filter(card => [...card.querySelectorAll('h3,p')].some(x =>

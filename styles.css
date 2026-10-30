@@ -1359,53 +1359,6 @@ body {
     line-height: 1.6;
 }
 
-/* ================= 4.6. Порядок работы (Workflow) ================= */
-.workflow-steps {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    position: relative;
-}
-
-.wf-step-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-sep);
-    border-radius: var(--radius-md);
-    padding: 2rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-}
-
-.wf-step-card:hover {
-    border-color: var(--accent-leather);
-    transform: translateY(-2px);
-}
-
-.wf-number {
-    font-family: var(--font-heading);
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--accent-leather);
-    line-height: 1;
-    margin-bottom: 1rem;
-}
-
-.wf-step-card h4 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-main);
-    margin-bottom: 0.5rem;
-}
-
-.wf-step-card p {
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    line-height: 1.55;
-}
-
 /* ================= 4.7. Отзывы и Репутация ================= */
 .maps-cards-grid {
     display: grid;
@@ -2343,7 +2296,6 @@ body {
     .hero-layout { grid-template-columns: 1fr; gap: 2.5rem; }
     .hero-featured-img { height: 380px; }
     .hero-title { font-size: 3rem; }
-    .workflow-steps { grid-template-columns: repeat(2, 1fr); }
     .gallery-grid { grid-template-columns: repeat(2, 1fr); }
     .contacts-grid { grid-template-columns: 1fr; }
 }
@@ -2366,7 +2318,6 @@ body {
     .hero-buttons { flex-direction: column; width: 100%; }
     .hero-buttons .btn { width: 100%; }
     .services-grid { grid-template-columns: 1fr; }
-    .workflow-steps { grid-template-columns: 1fr; }
     .maps-cards-grid { grid-template-columns: 1fr; }
     .gallery-grid { grid-template-columns: 1fr 1fr; }
     .calc-pills-grid { grid-template-columns: repeat(2, 1fr); }
@@ -2607,8 +2558,6 @@ svg {flex-shrink:0;}
     margin:0;
     overflow-wrap:break-word;
 }
-.workflow-steps { grid-template-columns:repeat(4,minmax(0,1fr)); }
-.workflow-steps > *, .step-card, .maps-cards-grid > * { min-width:0; }
 .calc-pills-grid {grid-template-columns:repeat(3,minmax(0,1fr));}
 .calc-pill { justify-content:center; text-align:center; overflow-wrap:break-word; }
 .calc-works-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
@@ -2642,7 +2591,6 @@ body.menu-open {overflow:hidden;}
 @media(max-width:1100px) {
     .advantages-grid {grid-template-columns:repeat(2,minmax(0,1fr));}
     .adv-card {min-height:210px;}
-    .workflow-steps {grid-template-columns:repeat(2,minmax(0,1fr));}
 }
 @media(max-width:860px) {
     .calc-result-box {grid-template-columns:1fr;}
@@ -2659,7 +2607,6 @@ body.menu-open {overflow:hidden;}
     .hero-title {font-size:clamp(2rem,8vw,2.9rem);}
     .hero-buttons {display:flex;flex-direction:column;}
     .hero-buttons > * {width:100%;}
-    .advantages-grid, .workflow-steps, .maps-cards-grid {grid-template-columns:1fr;}
     .adv-card {padding:1.3rem;min-height:unset;}
     .calc-works-grid {grid-template-columns:1fr;}
     .calc-pills-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;}
@@ -2972,4 +2919,49 @@ html {
     }
     .navbar .logo-title { font-size: .91rem; }
     .navbar .logo-subtitle { font-size: .44rem; }
+}
+
+
+/* Smooth reveal: remove the two large real-time blurred backdrop layers.
+   They forced expensive blur + clip repaints on mobile Safari during drag. */
+#portfolio .ba-layer::before {
+    content: none !important;
+    display: none !important;
+}
+#portfolio .ba-layer,
+#portfolio .before-after-container {
+    background: #332b25;
+}
+#portfolio .ba-after {
+    will-change: clip-path;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+#portfolio .ba-handle {
+    left: var(--clip-pos, 50%);
+    transform: translate3d(-50%, 0, 0);
+    will-change: left;
+}
+#portfolio .before-after-container {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: pan-y;
+}
+#portfolio .before-after-container.is-dragging,
+#portfolio .before-after-container.is-dragging * {
+    cursor: ew-resize;
+}
+#portfolio .ba-layer .ba-image {
+    -webkit-user-drag: none;
+    user-select: none;
+}
+#portfolio .ba-handle {
+    touch-action: none;
+}
+@media (prefers-reduced-motion: reduce) {
+    #portfolio .ba-handle,
+    #portfolio .ba-after {
+        transition: none !important;
+    }
 }
