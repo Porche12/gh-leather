@@ -1,0 +1,46 @@
+name: Publish GH-Leather on Beget (API access)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/deploy-beget-via-api.yml"
+      - ".github/scripts/deploy_beget_via_api.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gh-leather-beget-api
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Verify Beget ownership and deploy static site
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - name: Checkout GH-Leather
+        uses: actions/checkout@v4
+
+      - name: Configure Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build complete site with its local assets
+        run: |
+          python -m pip install --disable-pip-version-check "Pillow==11.3.0"
+          python .github/scripts/build_demo_before.py
+
+      - name: Validate local site and deploy scripts
+        run: |
+          python -m py_compile .github/scripts/deploy_beget_via_api.py
+          python .github/scripts/check_static_site.py
+          node --check app.js
+
+      - name: Confirm domain and upload to Beget with scoped API-generated FTP
+        env:
+          BEGET_API_PASSWORD: ${{ secrets.BEGET_API_PASSWORD }}
+        run: python .github/scripts/deploy_beget_via_api.py
