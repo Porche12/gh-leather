@@ -258,7 +258,7 @@
                 <div class="section-head text-center" data-aos="fade-up">
                     <span class="section-subtitle">ДЕМОНСТРАЦИЯ ВОССТАНОВЛЕНИЯ</span>
                     <h2 class="section-main-title">Портфолио «До и после»</h2>
-                    <p class="section-lead">Один и тот же предмет до и после визуальной обработки. Изображения демонстрационные, а не фотографии выполненного заказа.</p>
+                    <p class="section-lead">Один и тот же предмет с визуализацией износа и без него. Это демонстрационные изображения, не реальные работы ателье.</p>
                 </div>
 
                 <!-- Category Switcher for Portfolio -->
@@ -267,21 +267,24 @@
                         <button class="tab-btn active" onclick="switchPortfolioCase('jacket', this)">Кожаная куртка</button>
                         <button class="tab-btn" onclick="switchPortfolioCase('bag', this)">Брендовая сумка</button>
                     </div>
+                    <button type="button" class="ba-demo-btn" id="ba-animate-button" title="Показать сравнение ещё раз">
+                        <i data-lucide="play"></i> Показать эффект
+                    </button>
                 </div>
 
                 <!-- Interactive Comparison Slider Box -->
                 <div class="slider-showcase-wrapper" data-aos="zoom-in">
-                    <div class="before-after-container" id="ba-slider">
+                    <div class="before-after-container" id="ba-slider" style="--ba-preview-image: url('images/jacket_after.jpg')">
                         <!-- Before Layer (Base) -->
                         <div class="ba-layer ba-before">
-                            <img src="images/jacket_after.jpg" alt="Та же кожаная куртка с визуально смоделированными потертостями до восстановления" id="ba-img-before" class="ba-image">
-                            <div class="visual-badge badge-before">ДО РЕСТАВРАЦИИ</div>
+                            <img src="images/demo_jacket_before.jpg" alt="Кожаная куртка: демонстрация следов износа на том же изделии" id="ba-img-before" class="ba-image" decoding="async">
+                            <div class="visual-badge badge-before">ДО · ВИЗУАЛИЗАЦИЯ</div>
                         </div>
 
                         <!-- After Layer (Clipped over before) -->
                         <div class="ba-layer ba-after" id="ba-after-layer">
-                            <img src="images/jacket_after.jpg" alt="Изделие после реставрации" id="ba-img-after" class="ba-image">
-                            <div class="visual-badge badge-after">ПОСЛЕ РЕСТАВРАЦИИ</div>
+                            <img src="images/jacket_after.jpg" alt="Та же кожаная куртка без смоделированных повреждений" id="ba-img-after" class="ba-image" decoding="async">
+                            <div class="visual-badge badge-after">ПОСЛЕ · ОБРАЗЕЦ</div>
                         </div>
 
                         <!-- Handle with divider line -->
@@ -292,6 +295,7 @@
                             </div>
                             <div class="handle-line"></div>
                         </div>
+                        <div class="ba-swipe-hint" id="ba-swipe-hint" aria-hidden="true"><i data-lucide="move-horizontal"></i> Потяните разделитель</div>
                     </div>
 
                     <!-- Comparison Case Study Details (Placed cleanly under the slider) -->
@@ -301,14 +305,14 @@
                                 <span class="detail-dot dot-before"></span>
                                 <strong>Состояние «до»:</strong>
                             </div>
-                            <p id="case-before-desc">Моделирование истёртой поверхности и потери насыщенности цвета на той же самой куртке.</p>
+                            <p id="case-before-desc">Модельные потертости, частичная потеря цвета и следы эксплуатации на кожаной куртке.</p>
                         </div>
                         <div class="ba-detail-card after-card">
                             <div class="detail-badge-row">
                                 <span class="detail-dot dot-after"></span>
                                 <strong>Возможный результат:</strong>
                             </div>
-                            <p id="case-after-desc">Демонстрация обновления цвета и внешнего вида после возможной реставрации.</p>
+                            <p id="case-after-desc">Та же куртка без смоделированного износа: восстановленная насыщенность и внешний вид.</p>
                         </div>
                     </div>
 
