@@ -335,17 +335,20 @@ function initBeforeAfterSlider() {
 function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
     const overlay = document.getElementById('mobile-menu-overlay');
+    const toggleButton = document.getElementById('menu-toggle-btn');
     if (!menu) return;
 
     const isOpen = menu.classList.contains('open');
     if (isOpen) {
         menu.classList.remove('open');
         menu.setAttribute('aria-hidden', 'true');
+        toggleButton?.setAttribute('aria-expanded','false');
         if (overlay) overlay.classList.remove('open');
         document.body.style.overflow = '';
     } else {
         menu.classList.add('open');
         menu.setAttribute('aria-hidden', 'false');
+        toggleButton?.setAttribute('aria-expanded','true');
         if (overlay) overlay.classList.add('open');
         document.body.style.overflow = 'hidden';
     }
