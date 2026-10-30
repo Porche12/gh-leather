@@ -2,7 +2,9 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; font-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'none'; frame-src 'none'; form-action 'none'; object-src 'none'; base-uri 'self';">
     <title>GH-Leather — Ателье реставрации, ремонта и пошива изделий из кожи и меха в Волгограде</title>
     <meta name="description" content="Профессиональная реставрация, ремонт, покраска и индивидуальный пошив кожаных курток, шуб, дублёнок, обуви, сумок, салонов авто и мебели в Волгограде. Ул. Ангарская, 114. Калькулятор стоимости и контакты мастера.">
     <link rel="canonical" href="https://gh-leather.ru/">
@@ -60,7 +62,7 @@
     <!-- AOS Animations from GitHub -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Lucide Icons -->
-    <script defer src="assets/vendor/lucide.min.js"></script>
+    <script defer src="images/lucide.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -257,8 +259,8 @@
                 <!-- Category Switcher for Portfolio -->
                 <div class="category-tabs-wrapper" data-aos="fade-up">
                     <div class="category-tabs" id="portfolio-tabs">
-                        <button class="tab-btn active" onclick="switchPortfolioCase('jacket', this)">Кожаная куртка</button>
-                        <button class="tab-btn" onclick="switchPortfolioCase('bag', this)">Брендовая сумка</button>
+                        <button type="button" class="tab-btn active" data-case="jacket" aria-pressed="true" onclick="switchPortfolioCase('jacket', this)">Кожаная куртка</button>
+                        <button type="button" class="tab-btn" data-case="bag" aria-pressed="false" onclick="switchPortfolioCase('bag', this)">Кожаная сумка</button>
                     </div>
                     <button type="button" class="ba-demo-btn" id="ba-animate-button" title="Показать сравнение ещё раз">
                         <i data-lucide="play"></i> Сравнить снова
@@ -266,17 +268,17 @@
                 </div>
 
                 <!-- Interactive Comparison Slider Box -->
-                <div class="slider-showcase-wrapper" data-aos="zoom-in">
+                <div class="slider-showcase-wrapper" >
                     <div class="before-after-container" id="ba-slider" style="--ba-preview-image: url('images/studio_jacket_after.jpg')">
                         <!-- Before Layer (Base) -->
                         <div class="ba-layer ba-before">
-                            <img src="images/studio_jacket_before.jpg" alt="Кожаная куртка: демонстрация следов износа на том же изделии" id="ba-img-before" class="ba-image" decoding="async">
+                            <img src="images/studio_jacket_before.jpg" alt="Потёртая куртка до визуальной реставрации, тот же ракурс" id="ba-img-before" class="ba-image" decoding="async">
                             <div class="visual-badge badge-before">ДО · ВИЗУАЛИЗАЦИЯ</div>
                         </div>
 
                         <!-- After Layer (Clipped over before) -->
                         <div class="ba-layer ba-after" id="ba-after-layer">
-                            <img src="images/studio_jacket_after.jpg" alt="Та же кожаная куртка без смоделированных повреждений" id="ba-img-after" class="ba-image" decoding="async">
+                            <img src="images/studio_jacket_after.jpg" alt="Та же кожаная куртка без потертостей" id="ba-img-after" class="ba-image" decoding="async">
                             <div class="visual-badge badge-after">ПОСЛЕ · ОБРАЗЕЦ</div>
                         </div>
 
