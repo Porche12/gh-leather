@@ -65,7 +65,8 @@ def snapshot():
           ", set_type=" + str(entry.get("set_type")),flush=True)
     dns=entry.get("records",{}).get("DNS",[])
     print("Nameservers in Beget zone:",[r.get("value") for r in dns if isinstance(r,dict)],flush=True)
-    if str(entry.get("is_beget_dns",0))!="1":
+    dns_ready = entry.get("is_beget_dns")
+    if dns_ready not in (True, 1, "1", "true", "True"):
         raise RuntimeError("Domain is not using Beget DNS; no DNS changed")
     if str(entry.get("is_subdomain",0))!="0":
         raise RuntimeError("Expected apex domain, got subdomain")
