@@ -206,10 +206,12 @@ def upload(ftp_password):
     ftp = None
     for attempt in range(4):
         try:
+            print(f"FTPS connection attempt {attempt + 1}/4", flush=True)
             ftp = ftplib.FTP_TLS(context=tls, timeout=35)
             ftp.connect(FTP_SERVER, 21, timeout=35)
             ftp.login(FTP_USER, ftp_password)
             ftp.prot_p()
+            print("FTPS login and encrypted data channel established", flush=True)
             break
         except (OSError, ftplib.Error) as exc:
             if ftp is not None:
@@ -230,9 +232,11 @@ def upload(ftp_password):
     # Beget FTP chroots scoped users into their home directory.
     try:
         ftp.cwd("/")
+        print("Restricted FTP home is writable; starting upload", flush=True)
         uploaded = 0
         for asset in assets:
             relative = asset.relative_to(ROOT)
+            print(f"FTPS uploading: {relative.as_posix()}", flush=True)
             parts = relative.parts
             ftp.cwd("/")
             for part in parts[:-1]:
@@ -301,5 +305,5 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as exc:
-        print("DEPLOY ERROR:", str(exc), file=sys.stderr)
+        print("DEPLOY ERROR:", type(exc).__name__, str(exc), file=sys.stderr)
         sys.exit(1)
