@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>GH-Leather — Ателье реставрации, ремонта и пошива изделий из кожи и меха в Волгограде</title>
-    <meta name="description" content="Профессиональная реставрация, ремонт, покраска и индивидуальный пошив кожаных курток, шуб, дублёнок, обуви, сумок, салонов авто и мебели в Волгограде. Ул. Ангарская, 114. Оценка по фото за 15 минут.">
+    <meta name="description" content="Профессиональная реставрация, ремонт, покраска и индивидуальный пошив кожаных курток, шуб, дублёнок, обуви, сумок, салонов авто и мебели в Волгограде. Ул. Ангарская, 114. Калькулятор стоимости и контакты мастера.">
     <link rel="canonical" href="https://gh-leather.ru/">
     
     <!-- Open Graph & Social Meta -->
@@ -57,17 +57,10 @@
     </script>
 
     <!-- Google Fonts: Cormorant Garamond & Manrope (Contemporary Luxury / Editorial Minimalism) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- AOS Animations from GitHub -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Canvas Confetti -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-    <!-- Dexie Database from GitHub -->
-    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+    <script defer src="assets/vendor/lucide.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -101,16 +94,16 @@
             <!-- 5 Exact Main Sections Required by Spec -->
             <nav class="nav-links">
                 <a href="#services">Услуги</a>
-                <a href="#portfolio">Наши работы</a>
+                <a href="#portfolio">Примеры реставрации</a>
                 <a href="#prices">Цены</a>
                 <a href="#about">Об ателье</a>
                 <a href="#contacts">Контакты</a>
             </nav>
 
             <div class="nav-actions">
-                <button class="btn btn-luxury desktop-only-btn" onclick="openWizardModal()">
-                    <i data-lucide="camera"></i> Оценить по фото
-                </button>
+                <a href="#contacts" class="btn btn-luxury desktop-only-btn">
+                    <i data-lucide="message-circle"></i> Связаться с мастером
+                </a>
                 <button class="mobile-toggle" id="menu-toggle-btn" aria-label="Открыть мобильное меню" onclick="toggleMobileMenu()">
                     <i data-lucide="menu"></i>
                 </button>
@@ -141,11 +134,11 @@
             <a href="#contacts" onclick="toggleMobileMenu()"><i data-lucide="map-pin"></i> Контакты</a>
         </nav>
         <div class="mobile-menu-contacts">
-            <button class="btn btn-primary-gold full-width" onclick="toggleMobileMenu(); openWizardModal();">
-                <i data-lucide="camera"></i> Оценить по фото
-            </button>
+            <a href="#contacts" class="btn btn-primary-gold full-width">
+                <i data-lucide="message-circle"></i> Связаться с мастером
+            </a>
             <a href="tel:+78442503299" class="btn btn-outline full-width"><i data-lucide="phone"></i> +7 (8442) 50-32-99</a>
-            <a href="https://wa.me/79275103299" target="_blank" class="btn btn-whatsapp full-width"><i data-lucide="message-circle"></i> WhatsApp</a>
+            <a href="https://wa.me/79275103299" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp full-width"><i data-lucide="message-circle"></i> WhatsApp</a>
         </div>
     </div>
 
@@ -167,15 +160,15 @@
                         Реставрация, ремонт и индивидуальный пошив изделий из кожи и меха в Волгограде. Сохраняем красоту, характер и долговечность ваших вещей.
                     </p>
                     <div class="hero-buttons">
-                        <button class="btn btn-primary-gold" onclick="openWizardModal()">
-                            <i data-lucide="camera"></i> Оценить по фото
-                        </button>
+                        <a href="#contacts" class="btn btn-primary-gold">
+                            <i data-lucide="message-circle"></i> Связаться с мастером
+                        </a>
                         <a href="#portfolio" class="btn btn-glass">
                             <i data-lucide="sparkles"></i> Посмотреть работы
                         </a>
                     </div>
                     <div class="hero-trust-row">
-                        <div class="trust-item"><i data-lucide="check"></i> <span>Точная оценка по фото за 15 минут</span></div>
+                        <div class="trust-item"><i data-lucide="check"></i> <span>Бесплатная консультация мастера</span></div>
                         <div class="trust-item"><i data-lucide="check"></i> <span>Премиальные красители и химия Saphir</span></div>
                     </div>
                 </div>
@@ -207,9 +200,9 @@
                             <h2 class="section-main-title">Чем можем помочь?</h2>
                             <p>Выберите тип изделия — откроем нужный раздел калькулятора с ориентировочной стоимостью.</p>
                         </div>
-                        <button type="button" class="btn btn-primary-gold quick-services-cta" onclick="openWizardModal()">
-                            <i data-lucide="camera"></i> Оценить по фото
-                        </button>
+                        <a href="#contacts" class="btn btn-primary-gold quick-services-cta">
+                            <i data-lucide="message-circle"></i> Связаться с мастером
+                        </a>
                     </div>
                     <div class="quick-services-grid" aria-label="Выберите категорию услуг">
                         <button type="button" class="quick-service-item" onclick="goToService('jacket')">
@@ -252,13 +245,13 @@
             </div>
         </section>
 
-        <!-- 4.4. Портфолио «До и после» -->
+        <!-- 4.4. До и после реставрации -->
         <section id="portfolio" class="section-padding dark-bg">
             <div class="container">
                 <div class="section-head text-center" data-aos="fade-up">
-                    <span class="section-subtitle">ДЕМОНСТРАЦИЯ ВОССТАНОВЛЕНИЯ</span>
-                    <h2 class="section-main-title">Портфолио «До и после»</h2>
-                    <p class="section-lead">Один и тот же предмет с визуализацией износа и без него. Это демонстрационные изображения, не реальные работы ателье.</p>
+                    <span class="section-subtitle">НАГЛЯДНОЕ СРАВНЕНИЕ</span>
+                    <h2 class="section-main-title">До и после реставрации</h2>
+                    <p class="section-lead">Одна куртка или сумка — два состояния. Потяните разделитель и оцените разницу. Примеры созданы для демонстрации, а не сняты после реальных заказов.</p>
                 </div>
 
                 <!-- Category Switcher for Portfolio -->
@@ -268,22 +261,22 @@
                         <button class="tab-btn" onclick="switchPortfolioCase('bag', this)">Брендовая сумка</button>
                     </div>
                     <button type="button" class="ba-demo-btn" id="ba-animate-button" title="Показать сравнение ещё раз">
-                        <i data-lucide="play"></i> Показать эффект
+                        <i data-lucide="play"></i> Сравнить снова
                     </button>
                 </div>
 
                 <!-- Interactive Comparison Slider Box -->
                 <div class="slider-showcase-wrapper" data-aos="zoom-in">
-                    <div class="before-after-container" id="ba-slider" style="--ba-preview-image: url('images/jacket_after.jpg')">
+                    <div class="before-after-container" id="ba-slider" style="--ba-preview-image: url('images/studio_jacket_after.jpg')">
                         <!-- Before Layer (Base) -->
                         <div class="ba-layer ba-before">
-                            <img src="images/demo_jacket_before.jpg" alt="Кожаная куртка: демонстрация следов износа на том же изделии" id="ba-img-before" class="ba-image" decoding="async">
+                            <img src="images/studio_jacket_before.jpg" alt="Кожаная куртка: демонстрация следов износа на том же изделии" id="ba-img-before" class="ba-image" decoding="async">
                             <div class="visual-badge badge-before">ДО · ВИЗУАЛИЗАЦИЯ</div>
                         </div>
 
                         <!-- After Layer (Clipped over before) -->
                         <div class="ba-layer ba-after" id="ba-after-layer">
-                            <img src="images/jacket_after.jpg" alt="Та же кожаная куртка без смоделированных повреждений" id="ba-img-after" class="ba-image" decoding="async">
+                            <img src="images/studio_jacket_after.jpg" alt="Та же кожаная куртка без смоделированных повреждений" id="ba-img-after" class="ba-image" decoding="async">
                             <div class="visual-badge badge-after">ПОСЛЕ · ОБРАЗЕЦ</div>
                         </div>
 
@@ -305,14 +298,14 @@
                                 <span class="detail-dot dot-before"></span>
                                 <strong>Состояние «до»:</strong>
                             </div>
-                            <p id="case-before-desc">Модельные потертости, частичная потеря цвета и следы эксплуатации на кожаной куртке.</p>
+                            <p id="case-before-desc">Потёртости на рукавах и плечах, тусклая кожа и следы длительной носки.</p>
                         </div>
                         <div class="ba-detail-card after-card">
                             <div class="detail-badge-row">
                                 <span class="detail-dot dot-after"></span>
                                 <strong>Возможный результат:</strong>
                             </div>
-                            <p id="case-after-desc">Та же куртка без смоделированного износа: восстановленная насыщенность и внешний вид.</p>
+                            <p id="case-after-desc">Та же куртка: ровный цвет, гладкая поверхность и аккуратные детали.</p>
                         </div>
                     </div>
 
@@ -322,16 +315,16 @@
                             <p id="case-full-desc">Наглядный пример возможного эффекта. Для реального результата необходим осмотр изделия.</p>
                         </div>
                         <div class="caption-action">
-                            <button class="btn btn-primary-gold" onclick="openWizardModal()">
+                            <a href="#contacts" class="btn btn-primary-gold">
                                 <i data-lucide="sparkles"></i> Хочу восстановить своё изделие
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 <!-- Gallery Architecture (Real atelier photo gallery structure) -->
                 <div class="atelier-gallery-block" data-aos="fade-up">
-                    <h3 class="gallery-block-title">Кадры из мастерской GH-Leather</h3>
+                    <h3 class="gallery-block-title">Направления работы мастерской</h3>
                     <div class="gallery-grid">
                         <div class="gallery-item">
                             <img src="images/gallery_dyeing.jpg" alt="Покраска и колористика кожи" class="gallery-img">
@@ -424,10 +417,10 @@
                             </div>
 
                             <div class="calc-result-actions">
-                                <button type="button" class="btn btn-primary-gold" onclick="sendCalcToWizard()">
-                                    <i data-lucide="camera"></i> Уточнить оценку по фото
-                                </button>
-                                <a href="https://wa.me/79275103299" target="_blank" class="btn btn-whatsapp" id="calc-wa-btn">
+                                <a href="#contacts" class="btn btn-primary-gold">
+                                    <i data-lucide="message-circle"></i> Обсудить расчёт
+                                </a>
+                                <a href="https://wa.me/79275103299" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" id="calc-wa-btn">
                                     <i data-lucide="message-circle"></i> Спросить в WhatsApp
                                 </a>
                                 <a href="tel:+78442503299" class="btn btn-glass">
@@ -457,49 +450,49 @@
                                 <td>Устранение задиров, порезов, трещин воротника и манжет</td>
                                 <td>3–5 дней</td>
                                 <td class="price-col">3 500 ₽</td>
-                                <td><button class="btn btn-sm btn-luxury" onclick="openWizardModal('Куртка')">Заказать</button></td>
+                                <td><a href="#contacts" class="btn btn-sm btn-luxury">Заказать</a></td>
                             </tr>
                             <tr>
                                 <td><strong>Покраска кожаной куртки</strong></td>
                                 <td>Глубокая очистка, подбор оттенка, покраска и защитный лак</td>
                                 <td>4–6 дней</td>
                                 <td class="price-col">4 500 ₽</td>
-                                <td><button class="btn btn-sm btn-luxury" onclick="openWizardModal('Куртка')">Заказать</button></td>
+                                <td><a href="#contacts" class="btn btn-sm btn-luxury">Заказать</a></td>
                             </tr>
                             <tr>
                                 <td><strong>Реставрация и покраска сумок</strong></td>
                                 <td>Восстановление уголков, ручек, очистка, покраска тона</td>
                                 <td>2–4 дня</td>
                                 <td class="price-col">2 800 ₽</td>
-                                <td><button class="btn btn-sm btn-luxury" onclick="openWizardModal('Сумка')">Заказать</button></td>
+                                <td><a href="#contacts" class="btn btn-sm btn-luxury">Заказать</a></td>
                             </tr>
                             <tr>
                                 <td><strong>Покраска и спа-уход для обуви</strong></td>
                                 <td>Выведение реагентов, покраска туфель/сапог, нано-пропитка</td>
                                 <td>2–3 дня</td>
                                 <td class="price-col">2 200 ₽</td>
-                                <td><button class="btn btn-sm btn-luxury" onclick="openWizardModal('Обувь')">Заказать</button></td>
+                                <td><a href="#contacts" class="btn btn-sm btn-luxury">Заказать</a></td>
                             </tr>
                             <tr>
                                 <td><strong>Перекрой шубы / дубленки</strong></td>
                                 <td>Изменение фасона, укорачивание, коррекция проймы, посадка</td>
                                 <td>5–10 дней</td>
                                 <td class="price-col">9 000 ₽</td>
-                                <td><button class="btn btn-sm btn-luxury" onclick="openWizardModal('Шуба')">Заказать</button></td>
+                                <td><a href="#contacts" class="btn btn-sm btn-luxury">Заказать</a></td>
                             </tr>
                             <tr>
                                 <td><strong>Индивидуальный пошив куртки</strong></td>
                                 <td>Снятие мерок, раскрой итальянской Nappa, примерки, сборка</td>
                                 <td>7–14 дней</td>
                                 <td class="price-col">18 000 ₽</td>
-                                <td><button class="btn btn-sm btn-luxury" onclick="openWizardModal('Пошив куртки')">Заказать</button></td>
+                                <td><a href="#contacts" class="btn btn-sm btn-luxury">Заказать</a></td>
                             </tr>
                             <tr>
                                 <td><strong>Ремонт автосидений / дивана</strong></td>
                                 <td>Локальное устранение прожогов, порезов, восстановление цвета</td>
                                 <td>1–3 дня</td>
                                 <td class="price-col">5 000 ₽</td>
-                                <td><button class="btn btn-sm btn-luxury" onclick="openWizardModal('Автосалон/Мебель')">Заказать</button></td>
+                                <td><a href="#contacts" class="btn btn-sm btn-luxury">Заказать</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -509,11 +502,11 @@
                 <div class="price-cta-box" data-aos="fade-up">
                     <div>
                         <h4>Требуется точный расчёт стоимости?</h4>
-                        <p>Отправьте фото вашего изделия через пошаговый мастер — технолог назовёт точную смету с учётом степени износа в течение 15 минут.</p>
+                        <p>При необходимости отправьте фотографию напрямую мастеру в WhatsApp или Telegram. На сайте фотографии не загружаются.</p>
                     </div>
-                    <button class="btn btn-primary-gold" onclick="openWizardModal()">
-                        <i data-lucide="camera"></i> Рассчитать по фото
-                    </button>
+                    <a href="#contacts" class="btn btn-primary-gold">
+                        <i data-lucide="message-circle"></i> Уточнить у мастера
+                    </a>
                 </div>
             </div>
         </section>
@@ -574,7 +567,7 @@
                 <div class="section-head text-center" data-aos="fade-up">
                     <span class="section-subtitle">ПРОЗРАЧНЫЙ ПРОЦЕСС</span>
                     <h2 class="section-main-title">Как проходит работа</h2>
-                    <p class="section-lead">4 простых шага от заявки до обновленного изделия</p>
+                    <p class="section-lead">4 простых шага — от консультации до готовой вещи</p>
                 </div>
 
                 <!-- Exactly 4 steps specified in 4.6 -->
@@ -582,12 +575,12 @@
                     <div class="step-card">
                         <div class="step-num">01</div>
                         <h4>Отправка фотографии</h4>
-                        <p>Вы отправляете фотографию изделия через пошаговый мастер на сайте или напрямую в WhatsApp/Telegram.</p>
+                        <p>Вы можете описать задачу мастеру в мессенджере или по телефону.</p>
                     </div>
                     <div class="step-card">
                         <div class="step-num">02</div>
                         <h4>Предварительная оценка</h4>
-                        <p>Мастер проводит предварительную оценку по фото, определяет характер повреждений и ориентир стоимости.</p>
+                        <p>Мастер уточняет детали задачи, определяет характер повреждений и ориентир стоимости.</p>
                     </div>
                     <div class="step-card">
                         <div class="step-num">03</div>
@@ -609,7 +602,7 @@
                 <div class="section-head text-center" data-aos="fade-up">
                     <span class="section-subtitle">ПРОВЕРЕННАЯ РЕПУТАЦИЯ</span>
                     <h2 class="section-main-title">Отзывы на независимых картах</h2>
-                    <p class="section-lead">Ознакомьтесь с реальными отзывами жителей Волгограда о работе ателье GH-Leather</p>
+                    <p class="section-lead">Посмотрите отзывы о мастерской на независимых сервисах</p>
                 </div>
 
                 <div class="maps-cards-grid" data-aos="fade-up">
@@ -620,7 +613,7 @@
                             <div class="rating-stars">★★★★★</div>
                         </div>
                         <p class="map-card-text">Рейтинг организации подтверждён реальными клиентами, посещавшими мастерскую на ул. Ангарской, 114.</p>
-                        <a href="https://yandex.ru/maps/?text=Волгоград+Ангарская+114+GH-Leather" target="_blank" class="btn btn-glass full-width">
+                        <a href="https://yandex.ru/maps/?text=Волгоград+Ангарская+114+GH-Leather" target="_blank" rel="noopener noreferrer" class="btn btn-glass full-width">
                             <i data-lucide="external-link"></i> Открыть карточку в Яндекс Картах
                         </a>
                     </div>
@@ -632,7 +625,7 @@
                             <div class="rating-stars">★★★★★</div>
                         </div>
                         <p class="map-card-text">Подтверждённый профиль ателье с актуальным графиком работы, фотографиями входа и маршрутом.</p>
-                        <a href="https://2gis.ru/volgograd/search/Ангарская%20114" target="_blank" class="btn btn-glass full-width">
+                        <a href="https://2gis.ru/volgograd/search/Ангарская%20114" target="_blank" rel="noopener noreferrer" class="btn btn-glass full-width">
                             <i data-lucide="external-link"></i> Открыть карточку в 2ГИС
                         </a>
                     </div>
@@ -677,32 +670,28 @@
                         </div>
 
                         <div class="c-actions-row">
-                            <a href="https://yandex.ru/maps/?rtext=~48.723908,44.475476" target="_blank" class="btn btn-luxury">
+                            <a href="https://yandex.ru/maps/?rtext=~48.723908,44.475476" target="_blank" rel="noopener noreferrer" class="btn btn-luxury">
                                 <i data-lucide="navigation"></i> Построить маршрут
                             </a>
-                            <a href="https://wa.me/79275103299" target="_blank" class="btn btn-whatsapp">
+                            <a href="https://wa.me/79275103299" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
                                 <i data-lucide="message-circle"></i> WhatsApp
                             </a>
-                            <a href="https://t.me/+79275103299" target="_blank" class="btn btn-telegram">
+                            <a href="https://t.me/+79275103299" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" rel="noopener noreferrer">
                                 <i data-lucide="send"></i> Telegram
                             </a>
                         </div>
                     </div>
 
-                    <!-- Map Panel -->
-                    <div class="contact-map-panel" data-aos="fade-left">
-                        <div class="map-frame-wrapper">
-                            <iframe 
-                                src="https://yandex.ru/map-widget/v1/?ll=44.475476%2C48.723908&z=16&pt=44.475476,48.723908,pm2wtm" 
-                                width="100%" 
-                                height="420" 
-                                frameborder="0" 
-                                allowfullscreen="true" 
-                                title="Расположение ателье GH-Leather на карте Волгограда">
-                            </iframe>
-                            <div class="map-overlay-badge">
-                                <i data-lucide="map-pin"></i> г. Волгоград, ул. Ангарская, 114
-                            </div>
+                    <!-- Static contact panel: no third-party map embeds, cookies or tracking -->
+                    <div class="contact-map-panel contact-route-panel">
+                        <div class="contact-route-content">
+                            <span class="section-subtitle">КАК НАС НАЙТИ</span>
+                            <div class="contact-route-icon"><i data-lucide="map-pin"></i></div>
+                            <h3>Волгоград, Ангарская, 114</h3>
+                            <p>Дзержинский район. Выбирайте удобное приложение для построения маршрута.</p>
+                            <a class="btn btn-primary-gold" href="https://yandex.ru/maps/?text=Волгоград%2C%20Ангарская%20114" target="_blank" rel="noopener noreferrer"><i data-lucide="navigation"></i> Яндекс Карты</a>
+                            <a class="btn btn-glass" href="https://2gis.ru/volgograd/search/Ангарская%20114" target="_blank" rel="noopener noreferrer"><i data-lucide="map-pin"></i> Открыть 2ГИС</a>
+                            <small>Карты открываются только после вашего нажатия.</small>
                         </div>
                     </div>
                 </div>
@@ -710,324 +699,20 @@
         </section>
     </main>
 
-    <!-- 5. Система оценки стоимости по фото (Пошаговый интерактивный Wizard) -->
-    <div id="wizardModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="wizard-modal-title">
-        <div class="modal-box wizard-box">
-            <button class="modal-close" onclick="closeWizardModal()" aria-label="Закрыть окно"><i data-lucide="x"></i></button>
-
-            <!-- Wizard Header with Step Progress Bar -->
-            <div class="wizard-header">
-                <div class="wizard-step-indicator">
-                    <div class="step-dot active" id="dot-1">1</div>
-                    <div class="step-line" id="line-1"></div>
-                    <div class="step-dot" id="dot-2">2</div>
-                    <div class="step-line" id="line-2"></div>
-                    <div class="step-dot" id="dot-3">3</div>
-                </div>
-                <h3 id="wizard-modal-title">Оценка стоимости по фото</h3>
-                <p id="wizard-step-subtitle">Шаг 1 из 3: Выберите тип изделия</p>
-            </div>
-
-            <!-- Wizard Step 1: Product Item -->
-            <div class="wizard-step-panel active" id="step-panel-1">
-                <div class="wizard-items-grid">
-                    <button type="button" class="wizard-choice-btn active" data-item="Куртка" onclick="selectWizardItem(this)">
-                        <i data-lucide="shirt"></i>
-                        <span>Куртка</span>
-                    </button>
-                    <button type="button" class="wizard-choice-btn" data-item="Шуба" onclick="selectWizardItem(this)">
-                        <i data-lucide="feather"></i>
-                        <span>Шуба</span>
-                    </button>
-                    <button type="button" class="wizard-choice-btn" data-item="Дублёнка" onclick="selectWizardItem(this)">
-                        <i data-lucide="snowflake"></i>
-                        <span>Дублёнка</span>
-                    </button>
-                    <button type="button" class="wizard-choice-btn" data-item="Сумка" onclick="selectWizardItem(this)">
-                        <i data-lucide="shopping-bag"></i>
-                        <span>Сумка</span>
-                    </button>
-                    <button type="button" class="wizard-choice-btn" data-item="Обувь" onclick="selectWizardItem(this)">
-                        <i data-lucide="footprints"></i>
-                        <span>Обувь</span>
-                    </button>
-                    <button type="button" class="wizard-choice-btn" data-item="Мебель" onclick="selectWizardItem(this)">
-                        <i data-lucide="armchair"></i>
-                        <span>Мебель</span>
-                    </button>
-                    <button type="button" class="wizard-choice-btn" data-item="Автосалон" onclick="selectWizardItem(this)">
-                        <i data-lucide="car"></i>
-                        <span>Автосалон</span>
-                    </button>
-                    <button type="button" class="wizard-choice-btn" data-item="Другое" onclick="selectWizardItem(this)">
-                        <i data-lucide="help-circle"></i>
-                        <span>Другое</span>
-                    </button>
-                </div>
-                <div class="wizard-footer-nav">
-                    <div></div>
-                    <button type="button" class="btn btn-primary-gold" onclick="goToWizardStep(2)">
-                        Далее: Проблема <i data-lucide="arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Wizard Step 2: Problem Selection -->
-            <div class="wizard-step-panel" id="step-panel-2">
-                <div class="wizard-problems-grid">
-                    <label class="problem-checkbox">
-                        <input type="checkbox" name="problem" value="Потёртости" onchange="updateSelectedProblems()">
-                        <span class="problem-card-inner">
-                            <i data-lucide="disc"></i> Потёртости
-                        </span>
-                    </label>
-                    <label class="problem-checkbox">
-                        <input type="checkbox" name="problem" value="Царапины" onchange="updateSelectedProblems()">
-                        <span class="problem-card-inner">
-                            <i data-lucide="slash"></i> Царапины / порезы
-                        </span>
-                    </label>
-                    <label class="problem-checkbox">
-                        <input type="checkbox" name="problem" value="Разрыв" onchange="updateSelectedProblems()">
-                        <span class="problem-card-inner">
-                            <i data-lucide="split"></i> Разрыв ткани / кожи
-                        </span>
-                    </label>
-                    <label class="problem-checkbox">
-                        <input type="checkbox" name="problem" value="Потеря цвета" onchange="updateSelectedProblems()">
-                        <span class="problem-card-inner">
-                            <i data-lucide="paint-brush"></i> Потеря цвета / пятна
-                        </span>
-                    </label>
-                    <label class="problem-checkbox">
-                        <input type="checkbox" name="problem" value="Повреждение шва" onchange="updateSelectedProblems()">
-                        <span class="problem-card-inner">
-                            <i data-lucide="activity"></i> Повреждение шва
-                        </span>
-                    </label>
-                    <label class="problem-checkbox">
-                        <input type="checkbox" name="problem" value="Замена фурнитуры" onchange="updateSelectedProblems()">
-                        <span class="problem-card-inner">
-                            <i data-lucide="lock"></i> Замена фурнитуры
-                        </span>
-                    </label>
-                </div>
-
-                <div class="form-field mt-1">
-                    <label>Дополнительное описание проблемы (необязательно):</label>
-                    <textarea id="wizard-desc" rows="2" placeholder="Опишите, где находится повреждение..." class="form-input"></textarea>
-                </div>
-
-                <div class="wizard-footer-nav">
-                    <button type="button" class="btn btn-glass" onclick="goToWizardStep(1)">
-                        <i data-lucide="arrow-left"></i> Назад
-                    </button>
-                    <button type="button" class="btn btn-primary-gold" onclick="goToWizardStep(3)">
-                        Далее: Фото и контакты <i data-lucide="arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Wizard Step 3: Photos, Contacts & Confirmation -->
-            <div class="wizard-step-panel" id="step-panel-3">
-                <form id="wizard-submit-form" onsubmit="handleWizardFinalSubmit(event)">
-                    <!-- Анти-спам защита (Honeypot) -->
-                    <input type="text" name="b_website" class="hp-input" style="display:none !important;" tabindex="-1" autocomplete="off">
-
-                    <!-- Photos Dropzone with Preview and Delete -->
-                    <div class="form-field">
-                        <label>Прикрепите фотографии изделия (до 5 шт.):</label>
-                        <div class="photo-dropzone" onclick="triggerFileInput()">
-                            <i data-lucide="upload-cloud"></i>
-                            <span>Нажмите, чтобы прикрепить фото или сделать снимок</span>
-                            <small>Поддерживаются форматы JPG, PNG, WEBP (до 10 МБ)</small>
-                            <input type="file" id="wizard-file-input" multiple accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
-                        </div>
-                        <!-- Preview Grid for uploaded files -->
-                        <div id="photos-preview-grid" class="photos-preview-grid"></div>
-                    </div>
-
-                    <!-- Contact Details -->
-                    <div class="form-field">
-                        <label>Ваше имя</label>
-                        <input type="text" id="wiz-name" required placeholder="Константин" class="form-input">
-                    </div>
-
-                    <div class="form-field">
-                        <label>Номер телефона для связи</label>
-                        <input type="tel" id="wiz-phone" required placeholder="+7 (___) ___-__-__" class="form-input">
-                    </div>
-
-                    <!-- Preferred Channel -->
-                    <div class="form-field">
-                        <label>Куда отправить расчёт?</label>
-                        <div class="channel-pills">
-                            <label class="channel-pill active">
-                                <input type="radio" name="wiz-channel" value="WhatsApp" checked>
-                                <span><i data-lucide="message-circle"></i> WhatsApp</span>
-                            </label>
-                            <label class="channel-pill">
-                                <input type="radio" name="wiz-channel" value="Telegram">
-                                <span><i data-lucide="send"></i> Telegram</span>
-                            </label>
-                            <label class="channel-pill">
-                                <input type="radio" name="wiz-channel" value="Телефон">
-                                <span><i data-lucide="phone"></i> Звонок</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Consent Checkbox -->
-                    <label class="consent-checkbox">
-                        <input type="checkbox" required checked id="wiz-consent">
-                        <span>Согласен на <a href="javascript:void(0)" onclick="openPrivacyModal()" style="color:#f5e6b3; text-decoration:underline;">обработку персональных данных</a> в соответствии с 152-ФЗ</span>
-                    </label>
-
-                    <div class="wizard-footer-nav mt-1">
-                        <button type="button" class="btn btn-glass" onclick="goToWizardStep(2)">
-                            <i data-lucide="arrow-left"></i> Назад
-                        </button>
-                        <button type="submit" class="btn btn-primary-gold">
-                            <i data-lucide="check"></i> Отправить на оценку
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Wizard Step 4: Success Screen -->
-            <div class="wizard-step-panel" id="step-panel-success">
-                <div class="success-screen">
-                    <div class="success-icon-wrap"><i data-lucide="check-circle-2"></i></div>
-                    <h3>Заявка успешно принята!</h3>
-                    <div class="appeal-number-box">
-                        <span>Номер вашего обращения:</span>
-                        <strong id="appeal-number-text">№ GH-8421</strong>
-                    </div>
-                    <p class="success-desc">
-                        Технолог ателье уже изучает ваши материалы. Мы подготовим предварительный расчёт и свяжемся с вами в течение 15 минут в указанном мессенджере.
-                    </p>
-                    <button type="button" class="btn btn-luxury full-width" onclick="closeWizardModal()">
-                        Отлично, спасибо!
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Service Detail Modal -->
-    <div id="serviceDetailModal" class="modal-overlay" role="dialog" aria-modal="true">
-        <div class="modal-box">
-            <button class="modal-close" onclick="closeServiceDetailModal()" aria-label="Закрыть"><i data-lucide="x"></i></button>
-            <div class="modal-header">
-                <span class="section-subtitle">ОПИСАНИЕ УСЛУГИ</span>
-                <h3 id="serv-modal-title">Реставрация кожаных изделий</h3>
-            </div>
-            <div class="serv-modal-body">
-                <p id="serv-modal-desc">Подробное описание технологического процесса ателье.</p>
-                <div class="serv-modal-info-box">
-                    <div>
-                        <span class="text-muted">Ориентировочная цена:</span>
-                        <strong id="serv-modal-price" class="gold-text">от 3 500 ₽</strong>
-                    </div>
-                    <div>
-                        <span class="text-muted">Средний срок:</span>
-                        <strong id="serv-modal-time">3–5 рабочих дней</strong>
-                    </div>
-                </div>
-                <button class="btn btn-primary-gold full-width" onclick="closeServiceDetailModal(); openWizardModal();">
-                    <i data-lucide="camera"></i> Оценить стоимость по фото
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 7. Закрытая панель администратора для сотрудников ателье -->
-    <div id="adminModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="admin-panel-title">
-        <div class="modal-box admin-modal-box">
-            <button class="modal-close" onclick="closeAdminModal()" aria-label="Закрыть"><i data-lucide="x"></i></button>
-            
-            <!-- Экран авторизации сотрудника -->
-            <div id="admin-auth-view" class="admin-login-wrap">
-                <i data-lucide="shield-alert"></i>
-                <h3 id="admin-panel-title">Панель мастера GH-Leather</h3>
-                <p>Доступ к закрытому журналу обращений клиентов</p>
-                <form onsubmit="handleAdminLogin(event)">
-                    <div class="form-field">
-                        <input type="password" id="admin-password-input" class="form-input text-center" placeholder="Введите PIN сотрудника (1234)" required autocomplete="current-password">
-                    </div>
-                    <button type="submit" class="btn btn-primary-gold full-width mt-1">
-                        <i data-lucide="unlock"></i> Войти в систему
-                    </button>
-                    <div id="admin-login-err" style="display:none; color:#f87171; font-size:0.85rem; margin-top:0.6rem;">Неверный PIN сотрудника</div>
-                </form>
-            </div>
-
-            <!-- Защищенный журнал обращений -->
-            <div id="admin-dashboard-view" class="admin-panel-content">
-                <div class="modal-header">
-                    <span class="section-subtitle">ВНУТРЕННИЙ УЧЁТ АТЕЛЬЕ</span>
-                    <h3>Журнал обращений клиентов</h3>
-                </div>
-                <div class="admin-controls-bar">
-                    <input type="text" id="admin-search-box" class="form-input admin-search-input" placeholder="Поиск по имени или телефону..." oninput="filterAdminOrders()">
-                    <select id="admin-status-filter" class="form-input admin-status-filter" onchange="filterAdminOrders()">
-                        <option value="all">Все статусы</option>
-                        <option value="Новая">Новая</option>
-                        <option value="Оценка">Оценка</option>
-                        <option value="Согласование">Согласование</option>
-                        <option value="В работе">В работе</option>
-                        <option value="Готово">Готово</option>
-                        <option value="Завершена">Завершена</option>
-                    </select>
-                </div>
-                <div id="admin-orders-container" class="admin-orders-list">
-                    <!-- Заполняется заказами -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 12. Политика конфиденциальности (152-ФЗ) -->
-    <div id="privacyModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="privacy-modal-title">
-        <div class="modal-box" style="max-width: 680px;">
-            <button class="modal-close" onclick="closePrivacyModal()" aria-label="Закрыть"><i data-lucide="x"></i></button>
-            <div class="modal-header">
-                <span class="section-subtitle">ПРАВОВАЯ ИНФОРМАЦИЯ</span>
-                <h3 id="privacy-modal-title">Политика обработки персональных данных (152-ФЗ)</h3>
-            </div>
-            <div class="privacy-modal-body" style="font-size: 0.9rem; line-height: 1.6; color: #cbd5e1; max-height: 420px; overflow-y: auto; padding-right: 0.5rem;">
-                <p><strong>1. Общие положения</strong><br>
-                Настоящая Политика определяет порядок обработки и защиты персональных данных пользователей сайта ателье «GH-Leather» (г. Волгоград, ул. Ангарская, 114) в соответствии с Федеральным законом РФ № 152-ФЗ «О персональных данных».</p>
-                
-                <p><strong>2. Цели сбора данных</strong><br>
-                Мы обрабатываем предоставляемые вами данные (имя, номер телефона, фотографии изделий, комментарии к заказу) исключительно в целях предварительной оценки стоимости реставрации, консультирования мастера и связи по указанному вами каналу (WhatsApp, Telegram или звонок).</p>
-
-                <p><strong>3. Хранение и безопасность</strong><br>
-                Персональные данные и фотоматериалы не передаются третьим лицам и не используются в рекламных спам-рассылках. Все данные обрабатываются на защищенных устройствах оператора и используются только технологами ателье для согласования сметы.</p>
-
-                <p><strong>4. Права субъекта данных</strong><br>
-                Вы можете в любой момент отозвать свое согласие на обработку данных или запросить их удаление, обратившись по телефону мастерской <code>+7 (8442) 50-32-99</code> либо написав в WhatsApp <code>+7 (927) 510-32-99</code>.</p>
-            </div>
-            <div style="margin-top: 1.5rem;">
-                <button type="button" class="btn btn-luxury full-width" onclick="closePrivacyModal()">Понятно, закрыть</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Mobile Sticky Bottom Action Bar -->
     <aside class="mobile-bottom-bar" aria-label="Быстрая связь">
         <a href="tel:+78442503299" class="m-bottom-btn">
             <i data-lucide="phone"></i>
             <span>Позвонить</span>
         </a>
-        <a href="https://wa.me/79275103299" target="_blank" class="m-bottom-btn m-btn-wa">
+        <a href="https://wa.me/79275103299" target="_blank" rel="noopener noreferrer" class="m-bottom-btn m-btn-wa">
             <i data-lucide="message-circle"></i>
             <span>WhatsApp</span>
         </a>
-        <button type="button" class="m-bottom-btn m-btn-action" onclick="openWizardModal()">
-            <i data-lucide="camera"></i>
-            <span>Оценка</span>
-        </button>
+        <a href="#contacts" class="m-bottom-btn m-btn-action">
+            <i data-lucide="message-circle"></i>
+            <span>Контакты</span>
+        </a>
     </aside>
 
     <!-- Toast Notifications Container -->
@@ -1067,16 +752,12 @@
         <div class="footer-bottom">
             <div class="container footer-bottom-inner">
                 <span>© 2008–2026 Ателье «GH-Leather». Все права защищены.</span>
-                <div style="display:flex; gap:1.5rem; align-items:center;">
-                    <a href="javascript:void(0)" onclick="openPrivacyModal()" style="color:#94a3b8; font-size:0.8rem; text-decoration:underline;">Политика конфиденциальности</a>
-                    <button type="button" class="admin-link-btn" onclick="openAdminModal()" title="Служебный вход для мастеров">🔒 Панель мастера</button>
-                </div>
+                <div class="footer-data-note">На этом сайте нет форм и загрузки фото. Связь — через телефон или мессенджеры.</div>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
