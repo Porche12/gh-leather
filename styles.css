@@ -2525,3 +2525,165 @@ body {
   #portfolio .ba-swipe-hint {transition:none;}
   #portfolio .ba-demo-btn {transition:none;}
 }
+
+
+/* ======================================================================
+   GH Leather responsive polish — original warm leather palette retained
+   ====================================================================== */
+html, body { max-width:100%; }
+body { overflow-x:clip; }
+:where(button, a, input, select) { -webkit-tap-highlight-color: transparent; }
+:where(a, button):focus-visible { outline:3px solid var(--accent-gold-soft); outline-offset:3px; }
+:where(button, .btn, a) { touch-action:manipulation; }
+a { overflow-wrap:break-word; }
+svg {flex-shrink:0;}
+.container, .section-head, .section-main-title { min-width:0; }
+.section-main-title { text-wrap:balance; }
+.section-lead { max-width:720px; margin-inline:auto; }
+.btn { min-height:46px; display:inline-flex; align-items:center; justify-content:center; gap:.55rem; text-align:center; white-space:normal; line-height:1.3; padding-block:.8rem; }
+.btn svg { width:18px;height:18px; flex-shrink:0; }
+.btn:disabled {opacity:.6;cursor:not-allowed;}
+.nav-actions .btn {max-width:235px;}
+.hero-layout > *, .contacts-grid > *, .calculator-container > *, .calc-result-box > * {min-width:0;}
+.hero-title { overflow-wrap:normal; word-break:normal; }
+.quick-services-grid, .advantages-grid, .maps-cards-grid, .gallery-grid { min-width:0; }
+.quick-service-item { min-width:0; overflow:hidden; }
+.quick-service-copy strong { overflow-wrap:normal; }
+.quick-services-intro { min-width:0; }
+.quick-services-footer a { max-width:100%; }
+.advantages-grid {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    align-items:stretch;
+    gap:1.15rem;
+}
+.adv-card {
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:.72rem;
+    min-width:0;
+    min-height:245px;
+    height:100%;
+    padding:1.55rem;
+    overflow:visible;
+    overflow-wrap:break-word;
+}
+.adv-card > .adv-icon-wrap {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:48px;
+    height:48px;
+    flex:0 0 48px;
+    border-radius:var(--radius-sm);
+    background:rgba(138,90,59,.21);
+    color:var(--accent-gold-soft);
+}
+.adv-icon-wrap svg {width:23px;height:23px;}
+.adv-card > h3 {
+    display:block;
+    max-width:100%;
+    font-family:var(--font-body);
+    font-size:1.05rem;
+    font-weight:700;
+    line-height:1.45;
+    color:var(--dark-text-main);
+    margin:0;
+}
+.adv-card > p {
+    display:block;
+    max-width:100%;
+    color:var(--dark-text-muted);
+    font-size:.88rem;
+    line-height:1.7;
+    margin:0;
+    overflow-wrap:break-word;
+}
+.workflow-steps { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.workflow-steps > *, .step-card, .maps-cards-grid > * { min-width:0; }
+.calc-pills-grid {grid-template-columns:repeat(3,minmax(0,1fr));}
+.calc-pill { justify-content:center; text-align:center; overflow-wrap:break-word; }
+.calc-works-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.calc-work-card { text-align:left; font-family:inherit; width:100%; min-width:0; cursor:pointer; }
+.calc-work-card:focus-visible {border-color:var(--accent-leather);outline-offset:2px;}
+.calc-result-box {grid-template-columns:minmax(0,1fr) minmax(220px,270px);gap:1.1rem;}
+.calc-result-actions {min-width:0; width:100%;}
+.calc-result-actions .btn {width:100%;}
+.prices-table-container {width:100%;max-width:100%;overflow-x:auto;}
+.slider-showcase-wrapper { width:100%; max-width:820px; }
+#portfolio .before-after-container { height:clamp(370px,57vw,580px); background:#332b25; touch-action:pan-y; }
+#portfolio .ba-layer {background: #332b25;}
+#portfolio .ba-layer::before { filter:blur(30px) brightness(.42); opacity:.65;}
+#portfolio .ba-image {object-fit:contain;object-position:center center;}
+#portfolio .ba-before::after {display:none;}
+#portfolio .category-tabs-wrapper { flex-wrap:wrap; padding:0 1rem; }
+#portfolio .category-tabs {display:flex;justify-content:center;max-width:100%;overflow-x:auto;}
+#portfolio .ba-demo-btn { min-height:42px; }
+#portfolio .slider-caption-card, #portfolio .ba-case-details-grid { min-width:0; }
+#portfolio .ba-swipe-hint { white-space:normal; text-align:center; }
+.contact-route-panel {display:flex; align-items:center; justify-content:center; min-height:410px; background:linear-gradient(150deg,var(--dark-section),var(--dark-section-card));border-radius:var(--radius-lg);border:1px solid var(--dark-border);overflow:hidden;}
+.contact-route-content {width:100%;max-width:400px;display:flex;flex-direction:column;align-items:flex-start;gap:1rem;padding:clamp(1.5rem,4vw,2.5rem);color:var(--dark-text-main);}
+.contact-route-icon {width:58px;height:58px;display:grid;place-items:center;background:rgba(138,90,59,.2);border:1px solid var(--dark-border);border-radius:50%;color:var(--accent-gold-soft);}
+.contact-route-icon svg {width:25px;height:25px;}
+.contact-route-content h3 {font-family:var(--font-heading);font-size:clamp(1.5rem,2.3vw,2rem);line-height:1.18;}
+.contact-route-content p {color:var(--dark-text-muted);line-height:1.7;}
+.contact-route-content .btn {width:100%;}
+.contact-route-content small {font-size:.77rem;color:var(--dark-text-muted);}
+.footer-data-note { color:var(--dark-text-muted);font-size:.78rem;max-width:380px; }
+body.menu-open {overflow:hidden;}
+@media(max-width:1100px) {
+    .advantages-grid {grid-template-columns:repeat(2,minmax(0,1fr));}
+    .adv-card {min-height:210px;}
+    .workflow-steps {grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-width:860px) {
+    .calc-result-box {grid-template-columns:1fr;}
+    .calc-pills-grid {grid-template-columns:repeat(2,minmax(0,1fr));}
+    .nav-container {gap:.85rem;}
+    .hero-layout {grid-template-columns:1fr;}
+    .hero-text-col, .hero-visual-col {min-width:0;}
+    #portfolio .slider-showcase-wrapper { max-width:680px; }
+}
+@media(max-width:640px) {
+    .container {padding-inline:1rem;}
+    .section-padding {padding-top:3.25rem;padding-bottom:3.25rem;}
+    .section-main-title {font-size:clamp(1.8rem,7vw,2.5rem);}
+    .hero-title {font-size:clamp(2rem,8vw,2.9rem);}
+    .hero-buttons {display:flex;flex-direction:column;}
+    .hero-buttons > * {width:100%;}
+    .advantages-grid, .workflow-steps, .maps-cards-grid {grid-template-columns:1fr;}
+    .adv-card {padding:1.3rem;min-height:unset;}
+    .calc-works-grid {grid-template-columns:1fr;}
+    .calc-pills-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;}
+    .calc-pill {padding:.7rem .45rem;font-size:.82rem;min-width:0;}
+    .calc-result-box {grid-template-columns:1fr;padding:1rem;}
+    .calc-result-actions {min-width:0;}
+    .quick-services-intro {display:flex;flex-direction:column;align-items:stretch;}
+    .quick-services-cta {width:100%;}
+    .quick-services-grid {grid-template-columns:1fr;}
+    .top-bar-content {justify-content:center;}
+    .top-info {flex-wrap:wrap;justify-content:center;}
+    .top-info .divider {display:none;}
+    .top-contacts {flex-wrap:wrap;justify-content:center;}
+    .contact-route-panel {min-height:300px;}
+    .contact-route-content {align-items:stretch;}
+    .contact-route-content h3 {font-size:1.7rem;}
+    .c-actions-row {display:flex;flex-wrap:wrap;}
+    .c-actions-row > .btn {flex:1 1 140px;}
+    .footer-bottom-inner {align-items:flex-start;gap:.7rem;flex-direction:column;}
+    #portfolio .before-after-container {height:clamp(300px,99vw,460px);}
+    #portfolio .category-tabs {width:100%;justify-content:space-between;}
+    #portfolio .category-tabs .tab-btn {font-size:.75rem;padding:.6rem .75rem;}
+    #portfolio .ba-swipe-hint {bottom:8px;font-size:.67rem;}
+    #portfolio .visual-badge {max-width:42%;font-size:.62rem;}
+    .gallery-grid {grid-template-columns:repeat(2,minmax(0,1fr));}
+    .gallery-item {height:170px;}
+}
+@media(max-width:360px) {
+    .calc-pills-grid {grid-template-columns:1fr;}
+    .hero-title {font-size:2rem;}
+    .gallery-grid {grid-template-columns:1fr;}
+    #portfolio .ba-handle .handle-circle {height:40px;width:40px;}
+}
+
