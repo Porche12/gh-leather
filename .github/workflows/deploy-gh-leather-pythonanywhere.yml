@@ -10,6 +10,8 @@ on:
       - "images/**"
       - ".github/scripts/deploy_gh_leather_pa.py"
       - ".github/scripts/build_demo_before.py"
+      - ".github/scripts/check_static_site.py"
+      - ".github/scripts/browser_smoke.py"
       - ".github/workflows/deploy-gh-leather-pythonanywhere.yml"
   workflow_dispatch:
 
@@ -38,6 +40,17 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check "Pillow==11.3.0"
           python .github/scripts/build_demo_before.py
+
+      - name: Validate site code and assets
+        run: |
+          node --check app.js
+          python .github/scripts/check_static_site.py
+
+      - name: Verify responsive layout and interactions in Chromium
+        run: |
+          python -m pip install --disable-pip-version-check "playwright==1.56.0"
+          python -m playwright install chromium
+          python .github/scripts/browser_smoke.py
 
       - name: Upload and verify
         env:
