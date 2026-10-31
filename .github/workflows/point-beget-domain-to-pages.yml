@@ -1,4 +1,4 @@
-name: Repair GH-Leather DNS and HTTPS
+name: Check GH-Leather DNS and HTTPS
 
 on:
   push:
@@ -15,7 +15,7 @@ on:
 
 permissions:
   contents: read
-  pages: write
+  pages: read
 
 concurrency:
   group: ghleather-domain-dns
@@ -57,11 +57,11 @@ jobs:
         env:
           BEGET_API_PASSWORD: ${{ secrets.BEGET_API_PASSWORD }}
         run: python .github/scripts/point-beget-dns-to-github-pages.py
-      - name: Provision and verify HTTPS for the website
+      - name: Verify certificates and HTTPS enforcement
         if: ${{ always() && steps.registry.outputs.delegated == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python .github/scripts/ensure-pages-https.py
+        run: python .github/scripts/ensure-pages-https.py --verify-only
       - name: Check public DNS and GitHub Pages
         if: always()
         env:

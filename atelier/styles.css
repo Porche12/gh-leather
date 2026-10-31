@@ -6,3 +6,8 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.js .reveal{opacity:1;transform:none}.hero-photo{transform:none!important}}
 @media(max-width:480px){.contact-main h2{font-size:clamp(44px,13.5vw,58px)}}
 @media(max-width:360px){.brand-type{font-size:11px}.brand-type small{font-size:6px}.hero-city{display:none}.round-link{gap:6px;font-size:8px}.round-link-circle{width:47px;height:47px}.hero-bottom p{font-size:9px}.price-list>button{font-size:9px}.contact-top>.eyebrow{max-width:145px}}
+
+/* Decorative marks use vectors rather than font/emoji glyph coverage. */
+.icon-arrow,.icon-star{display:inline-block;width:1em;height:1em;vertical-align:-.16em;flex-shrink:0}
+.contact-circle>.icon-arrow{width:1em;height:1em}
+.tiny-cross,.statement-star{line-height:1}

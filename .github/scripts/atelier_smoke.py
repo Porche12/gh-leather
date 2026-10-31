@@ -41,6 +41,7 @@ def exercise(page, width, url):
     page.locator('.service-card[data-service="bag"]').click()
     dialog = page.locator("#consult-dialog")
     expect(dialog).to_be_visible()
+    assert page.evaluate("document.body.classList.contains('modal-open')"), "Open modal did not lock background scrolling"
     expect(page.locator("#service-select")).to_have_value("bag")
     for key, price in EXPECTED_PRICES.items():
         page.locator("#service-select").select_option(key)
@@ -57,7 +58,10 @@ def exercise(page, width, url):
     assert page.url == url, "Submitting the quote navigated the website"
     page.keyboard.press("Escape")
     expect(dialog).not_to_be_visible()
-    assert page.evaluate("!document.body.classList.contains('modal-open')"), "Modal left page scrolling locked"
+    # The native dialog closes immediately, then dispatches its close event in
+    # a queued task. Wait for the application's close handler, not a fixed sleep.
+    page.wait_for_function("""() => !document.getElementById('consult-dialog').open
+      && !document.body.classList.contains('modal-open')""")
 
     # Native range must be usable without a pointer; tabs must support Tab/Enter.
     jacket = page.locator('[data-compare="jacket"]')

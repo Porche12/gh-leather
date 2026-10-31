@@ -66,7 +66,7 @@ document.querySelectorAll('[data-compare]').forEach(button=>button.addEventListe
  document.querySelectorAll('[data-compare]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});
  const before=document.getElementById('before-img'),after=document.getElementById('after-img');
  before.src=value.before;before.alt=value.thing+' до реставрации';after.src=value.after;after.alt=value.thing+' после реставрации мастерской '+value.source;
- const source=document.getElementById('compare-source');source.textContent=value.source+' ↗';source.href=value.url;
+ const source=document.getElementById('compare-source');source.textContent=value.source;source.href=value.url;
  range.value=50;updateSplit();
 }));
 // Native details retain keyboard support and work without JavaScript.

@@ -199,7 +199,17 @@ def verify_live_site():
 
 def main():
     client = GitHubPagesClient(os.environ.get("GITHUB_REPOSITORY", ""), os.environ.get("GH_TOKEN", ""))
-    configure_https(client)
+    if "--verify-only" in sys.argv[1:]:
+        settings = client.call("GET")
+        require_attached_domain(settings)
+        if settings.get("https_enforced") is not True:
+            raise VerificationError(
+                "HTTPS is not enforced. The repository owner must finish certificate "
+                "provisioning and enable Enforce HTTPS in Settings > Pages. "
+                "No administrative API write attempted."
+            )
+    else:
+        configure_https(client)
     verify_live_site()
     print("PASS: real-origin certificates, HTTPS enforcement and canonical redirects verified.")
 
