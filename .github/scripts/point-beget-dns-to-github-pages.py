@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Point ONLY ghleather.ru root A records on Beget DNS to GitHub Pages.
+"""Keep ghleather.ru and its www alias on the same GitHub Pages site.
 
 The Beget API password is read from GitHub Actions secret BEGET_API_PASSWORD.
-No nameservers, MX, TXT, or unrelated domain/subdomain records are changed.
+Only apex A records and the website's www alias may change.
+Nameservers, apex mail records and unrelated subdomains are preserved.
 If the domain is not delegated to Beget DNS, abort instead of guessing.
 """
 import json
@@ -18,6 +19,8 @@ BEGET_LOGIN="b2000an4"
 DOMAIN="ghleather.ru"
 GITHUB_PAGE_IPS=["185.199.108.153","185.199.109.153","185.199.110.153","185.199.111.153"]
 PASSWORD=os.environ.get("BEGET_API_PASSWORD","")
+WWW="www."+DOMAIN
+WWW_TARGET="porche12.github.io"
 
 
 def call(method, params):
@@ -100,8 +103,45 @@ def public_a():
             if line.strip().count(".")==3 and all(part.isdigit() for part in line.strip().split("."))]
 
 
+def public_www_cname():
+    result=subprocess.run(
+        ["dig","+short","CNAME",WWW,"@1.1.1.1"],
+        capture_output=True,text=True,timeout=15,check=False)
+    return [line.strip().lower().rstrip(".") for line in result.stdout.splitlines()
+            if line.strip()] if result.returncode==0 else []
+
+
+def ensure_www():
+    # A stale Beget A record on www prevents GitHub's apex+www certificate.
+    if public_www_cname()==[WWW_TARGET]:
+        print("SUCCESS: www CNAME already points at the GitHub Pages owner.")
+        return
+    entry=unwrap(call("getData",{"fqdn":WWW}))
+    if str(entry.get("fqdn","")).lower().rstrip(".")!=WWW:
+        raise RuntimeError("Beget returned wrong www domain; no alias changed")
+    if entry.get("is_beget_dns") not in (True,1,"1","true","True"):
+        raise RuntimeError("www is not managed by Beget DNS; no alias changed")
+    if entry.get("is_subdomain") not in (True,1,"1","true","True"):
+        raise RuntimeError("Expected www subdomain; no alias changed")
+    if int(entry.get("set_type",0)) not in (1,3):
+        raise RuntimeError("www is delegated elsewhere; no alias changed")
+    records=entry.get("records",{})
+    # CNAME cannot coexist with mail/TXT records; never silently drop these.
+    if any(x["value"] for kind in ("MX","TXT")
+           for x in formatted(records.get(kind,[]))):
+        raise RuntimeError("www contains mail/TXT records; alias needs manual review")
+    if os.environ.get("DRY_RUN","0")=="1":
+        print("DRY_RUN: would set only www CNAME to "+WWW_TARGET)
+        return
+    if call("changeRecords",{"fqdn":WWW,"records":{
+            "CNAME":[{"priority":10,"value":WWW_TARGET}]}}) is not True:
+        raise RuntimeError("Beget did not confirm www alias update")
+    print("SUCCESS: Beget accepted www CNAME; public propagation may take time.")
+
+
 def main():
     original=snapshot()
+    ensure_www()
     current=[x["value"] for x in formatted(original.get("A",[]))]
     print("Beget API A records:",", ".join(current) or "(API has no concrete A values)")
     public=public_a()
