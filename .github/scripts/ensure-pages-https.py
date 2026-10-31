@@ -189,12 +189,11 @@ def verify_redirect_chain(start_url: str, *, require_redirect: bool):
 
 
 def verify_live_site():
+    # The canonical Pages domain is the apex. The www host may carry separate
+    # mail records and is intentionally not reconfigured or certified here.
     verify_tls_host(DOMAIN)
-    verify_tls_host(WWW_DOMAIN)
     verify_redirect_chain("https://" + DOMAIN + "/", require_redirect=False)
     verify_redirect_chain("http://" + DOMAIN + "/", require_redirect=True)
-    verify_redirect_chain("https://" + WWW_DOMAIN + "/", require_redirect=True)
-    verify_redirect_chain("http://" + WWW_DOMAIN + "/", require_redirect=True)
 
 
 def main():
@@ -202,10 +201,22 @@ def main():
     if "--verify-only" in sys.argv[1:]:
         settings = client.call("GET")
         require_attached_domain(settings)
+        certificate = settings.get("https_certificate") or {}
+        certificate_state = str(certificate.get("state") or "not issued").lower()
+        if certificate_state not in {"approved"}:
+            if certificate_state in {"errored", "failed"}:
+                raise VerificationError(
+                    "GitHub Pages reports a certificate error. Check the apex DNS records and Pages domain settings."
+                )
+            print(
+                "::warning::GitHub Pages certificate is still provisioning ("
+                + certificate_state
+                + "). HTTPS checks will retry on the next scheduled run."
+            )
+            return
         if settings.get("https_enforced") is not True:
             raise VerificationError(
-                "HTTPS is not enforced. The repository owner must finish certificate "
-                "provisioning and enable Enforce HTTPS in Settings > Pages. "
+                "GitHub Pages certificate is approved but HTTPS is not enforced. Enable Enforce HTTPS in Settings > Pages. "
                 "No administrative API write attempted."
             )
     else:

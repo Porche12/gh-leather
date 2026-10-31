@@ -5,6 +5,9 @@ spec=importlib.util.spec_from_file_location('dns',str(Path(__file__).resolve().p
 m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 class DnsTests(unittest.TestCase):
  def entry(self,**kw):return dict(fqdn=m.WWW,is_beget_dns=True,is_subdomain=True,set_type=1,records={},**kw)
+ def test_correct_apex_dns_skips_beget_and_preserves_www(self):
+  with patch.object(m,'public_a',return_value=m.GITHUB_PAGE_IPS),patch.object(m,'snapshot') as snapshot,patch.object(m,'ensure_www') as ensure_www:
+   m.main();snapshot.assert_not_called();ensure_www.assert_not_called()
  def test_correct_public_alias_needs_no_api_write(self):
   with patch.object(m,'public_www_cname',return_value=[m.WWW_TARGET]),patch.object(m,'call') as call:
    m.ensure_www();call.assert_not_called()

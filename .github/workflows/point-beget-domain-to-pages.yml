@@ -52,12 +52,12 @@ jobs:
             echo "Public NS delegation found:"
             echo "$nameservers"
           fi
-      - name: Configure GitHub Pages A records without touching mail
+      - name: Configure GitHub Pages apex A records without touching mail
         if: steps.registry.outputs.delegated == 'true'
         env:
           BEGET_API_PASSWORD: ${{ secrets.BEGET_API_PASSWORD }}
         run: python .github/scripts/point-beget-dns-to-github-pages.py
-      - name: Verify certificates and HTTPS enforcement
+      - name: Verify apex certificate and HTTPS enforcement
         if: ${{ always() && steps.registry.outputs.delegated == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -69,12 +69,26 @@ jobs:
         run: |
           echo "Public A records:"
           dig +short A ghleather.ru @1.1.1.1 || true
-          echo "GitHub Pages certificate status:"
-          curl -fsSL --max-time 20 \
+          echo "GitHub Pages apex certificate status:"
+          pages_json="$(curl -fsSL --max-time 20 \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
-          | python -c 'import json,sys; d=json.load(sys.stdin); c=d.get("https_certificate") or {}; print("domain="+str(d.get("cname"))+"; status="+str(d.get("status"))+"; HTTPS enforced="+str(d.get("https_enforced"))+"; certificate="+str(c.get("state","not issued")))'
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages")"
+          printf '%s' "$pages_json" | python -c 'import json,sys; d=json.load(sys.stdin); c=d.get("https_certificate") or {}; print("domain="+str(d.get("cname"))+"; HTTPS enforced="+str(d.get("https_enforced"))+"; certificate="+str(c.get("state","not issued")))'
+          certificate_state="$(printf '%s' "$pages_json" | python -c 'import json,sys; d=json.load(sys.stdin); c=d.get("https_certificate") or {}; print(str(c.get("state") or "not issued").lower())')"
+          https_enforced="$(printf '%s' "$pages_json" | python -c 'import json,sys; print(str(bool(json.load(sys.stdin).get("https_enforced"))).lower())')"
+          if [ "$certificate_state" = "errored" ] || [ "$certificate_state" = "failed" ]; then
+            echo "::error::GitHub Pages reports a certificate error for the apex domain."
+            exit 1
+          fi
+          if [ "$certificate_state" != "approved" ]; then
+            echo "::warning::The apex certificate is still provisioning. This scheduled check will retry later."
+            exit 0
+          fi
+          if [ "$https_enforced" != "true" ]; then
+            echo "::error::The apex certificate is approved, but Enforce HTTPS is off in Settings > Pages."
+            exit 1
+          fi
           echo "Public HTTPS:"
           if curl -fsSL --max-time 15 https://ghleather.ru/ -o /tmp/ghleather-live.html \
                && grep -qi 'GH-Leather' /tmp/ghleather-live.html; then

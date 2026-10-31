@@ -70,6 +70,43 @@ class PagesFlowTests(unittest.TestCase):
                 module.main()
             live.assert_not_called()
 
+    def test_pending_certificate_warns_and_retries_later(self):
+        client = MagicMock()
+        client.call.return_value = {
+            "cname": module.DOMAIN,
+            "https_enforced": False,
+            "https_certificate": {"state": "pending"},
+        }
+        with patch.object(module, "GitHubPagesClient", return_value=client), \
+                patch.object(module.sys, "argv", ["ensure-pages-https.py", "--verify-only"]), \
+                patch.object(module, "verify_live_site") as live:
+            module.main()
+        live.assert_not_called()
+
+    def test_approved_certificate_without_enforcement_stays_an_error(self):
+        client = MagicMock()
+        client.call.return_value = {
+            "cname": module.DOMAIN,
+            "https_enforced": False,
+            "https_certificate": {"state": "approved"},
+        }
+        with patch.object(module, "GitHubPagesClient", return_value=client), \
+                patch.object(module.sys, "argv", ["ensure-pages-https.py", "--verify-only"]), \
+                patch.object(module, "verify_live_site") as live:
+            with self.assertRaisesRegex(module.VerificationError, "not enforced"):
+                module.main()
+        live.assert_not_called()
+
+    def test_live_site_only_verifies_canonical_apex(self):
+        with patch.object(module, "verify_tls_host") as tls, \
+                patch.object(module, "verify_redirect_chain") as redirects:
+            module.verify_live_site()
+        self.assertEqual(tls.call_args_list, [unittest.mock.call(module.DOMAIN)])
+        self.assertEqual(
+            [call.args[0] for call in redirects.call_args_list],
+            ["https://" + module.DOMAIN + "/", "http://" + module.DOMAIN + "/"],
+        )
+
 
 class OriginTests(unittest.TestCase):
     def test_http_redirects_to_canonical_https(self):
@@ -104,11 +141,14 @@ class OriginTests(unittest.TestCase):
                 module.verify_tls_host("ghleather.ru")
         self.assertEqual(context.wrap_socket.call_args.kwargs["server_hostname"], "ghleather.ru")
 
-    def test_tls_checks_both_hosts_and_all_entry_points(self):
+    def test_tls_checks_only_canonical_apex_entry_points(self):
         with patch.object(module, "verify_tls_host") as tls, patch.object(module, "verify_redirect_chain") as redirect:
             module.verify_live_site()
-        self.assertEqual([call.args[0] for call in tls.call_args_list], ["ghleather.ru", "www.ghleather.ru"])
-        self.assertEqual(redirect.call_count, 4)
+        self.assertEqual([call.args[0] for call in tls.call_args_list], ["ghleather.ru"])
+        self.assertEqual(
+            [call.args[0] for call in redirect.call_args_list],
+            ["https://ghleather.ru/", "http://ghleather.ru/"],
+        )
 
 
 if __name__ == "__main__":

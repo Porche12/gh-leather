@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Keep ghleather.ru and its www alias on the same GitHub Pages site.
+"""Keep the canonical apex ghleather.ru on GitHub Pages without changing www.
 
 The Beget API password is read from GitHub Actions secret BEGET_API_PASSWORD.
-Only apex A records and the website's www alias may change.
-Nameservers, apex mail records and unrelated subdomains are preserved.
+Only apex A records may change. The www host is intentionally left untouched
+because it may carry mail records. Nameservers and apex mail records are preserved.
 If the domain is not delegated to Beget DNS, abort instead of guessing.
 """
 import json
@@ -156,15 +156,19 @@ def ensure_www():
 
 
 def main():
+    # Avoid requiring Beget credentials when the public apex records are
+    # already correct. This workflow intentionally never changes the www host.
+    public=public_a()
+    print("Public apex A records:",", ".join(public) or "(none)",flush=True)
+    if set(public)==set(GITHUB_PAGE_IPS) and len(public)==4:
+        print("SUCCESS: apex DNS already points at GitHub Pages; no Beget API or www changes required.",flush=True)
+        return
+
     original=snapshot()
-    ensure_www()
     current=[x["value"] for x in formatted(original.get("A",[]))]
     print("Beget API A records:",", ".join(current) or "(API has no concrete A values)")
-    public=public_a()
     print("Public A records:",", ".join(public) or "(none)")
-    if set(public)==set(GITHUB_PAGE_IPS) and len(public)==4:
-        print("SUCCESS: public DNS already points at all GitHub Pages IPs; no writes required.")
-        return
+    print("www is not managed by this workflow; existing www and mail records are preserved.")
     # Preserve existing MX and TXT data; never overwrite nameservers or mail.
     planned={
       "A":[{"priority":10,"value":value} for value in GITHUB_PAGE_IPS]
