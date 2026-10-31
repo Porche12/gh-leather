@@ -22,12 +22,12 @@ class DnsTests(unittest.TestCase):
    with self.assertRaisesRegex(RuntimeError,'wrong www'):m.ensure_www()
    self.assertEqual(call.call_count,1)
  def test_missing_www_is_created_only_under_exact_parent(self):
-  with patch.object(m,'public_www_cname',return_value=[]),patch.object(m,'call',side_effect=[RuntimeError('missing'),[],[{'fqdn':m.DOMAIN,'id':'123'}],'456',self.entry(),True]) as call:
+  with patch.object(m,'public_www_cname',return_value=[]),patch.object(m,'call',side_effect=[RuntimeError('Beget DNS request rejected: getData METHOD_FAILED'),[],[{'fqdn':m.DOMAIN,'id':'123'}],'456',self.entry(),True]) as call:
    m.ensure_www()
    self.assertEqual(call.call_args_list[3].args,('addSubdomainVirtual',{'subdomain':'www','domain_id':123}))
    self.assertEqual(call.call_args_list[3].kwargs,{'section':'domain'})
  def test_unreadable_existing_www_is_not_recreated(self):
-  with patch.object(m,'public_www_cname',return_value=[]),patch.object(m,'call',side_effect=[RuntimeError('unreadable'),[{'fqdn':m.WWW}]]) as call:
+  with patch.object(m,'public_www_cname',return_value=[]),patch.object(m,'call',side_effect=[RuntimeError('Beget DNS request rejected: getData METHOD_FAILED'),[{'fqdn':m.WWW}]]) as call:
    with self.assertRaisesRegex(RuntimeError,'exists but'):m.ensure_www()
    self.assertEqual(call.call_count,2)
 if __name__=='__main__':unittest.main()

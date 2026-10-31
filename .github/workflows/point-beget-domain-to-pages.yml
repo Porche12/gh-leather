@@ -58,7 +58,7 @@ jobs:
           BEGET_API_PASSWORD: ${{ secrets.BEGET_API_PASSWORD }}
         run: python .github/scripts/point-beget-dns-to-github-pages.py
       - name: Provision and verify HTTPS for the website
-        if: steps.registry.outputs.delegated == 'true'
+        if: ${{ always() && steps.registry.outputs.delegated == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: python .github/scripts/ensure-pages-https.py

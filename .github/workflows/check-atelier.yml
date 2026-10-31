@@ -1,0 +1,41 @@
+name: Check editorial atelier website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "atelier/**"
+      - ".github/scripts/atelier_smoke.py"
+      - ".github/workflows/check-atelier.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-atelier
+  cancel-in-progress: true
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install browser test dependencies
+        run: |
+          python -m pip install --disable-pip-version-check "playwright==1.56.0"
+          python -m playwright install --with-deps chromium
+      - name: Test desktop, tablet and mobile atelier flows
+        run: python .github/scripts/atelier_smoke.py
+      - name: Save desktop and mobile screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atelier-browser-screenshots
+          path: artifacts/atelier/*.png
+          retention-days: 14
+          if-no-files-found: warn

@@ -11,6 +11,7 @@ import os
 import subprocess
 import time
 import sys
+import re
 import urllib.parse
 import urllib.request
 import urllib.error
@@ -48,7 +49,10 @@ def call(method, params=None, section="dns"):
         wrapped=answer.get("answer",{})
         errs=wrapped.get("errors",[]) if isinstance(wrapped,dict) else []
         codes=[str(e.get("error_code","unknown")) for e in errs if isinstance(e,dict)]
-        raise RuntimeError("Beget DNS request rejected: "+method+" "+",".join(codes))
+        messages=[str(e.get("error_text","")) for e in errs if isinstance(e,dict)]
+        diagnostic=" ".join(messages).replace(PASSWORD,"[redacted]").replace(BEGET_LOGIN,"[account]")
+        diagnostic=re.sub(r"[A-Za-z0-9_+/=-]{20,}","[redacted]",diagnostic)[:180]
+        raise RuntimeError("Beget DNS request rejected: "+method+" "+",".join(codes)+" "+diagnostic)
     return answer["answer"].get("result")
 
 
@@ -120,7 +124,9 @@ def ensure_www():
     created=False
     try:
         entry=unwrap(call("getData",{"fqdn":WWW}))
-    except RuntimeError:
+    except RuntimeError as error:
+        if "getData METHOD_FAILED" not in str(error):
+            raise
         # Beget's wildcard website A response is not an explicit www subzone.
         # Create the free virtual subdomain only after confirming it is absent.
         subs=call("getSubdomainList",section="domain")
