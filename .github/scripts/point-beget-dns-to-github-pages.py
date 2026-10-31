@@ -23,17 +23,18 @@ WWW="www."+DOMAIN
 WWW_TARGET="porche12.github.io"
 
 
-def call(method, params):
+def call(method, params=None, section="dns"):
     if not PASSWORD: raise RuntimeError("GitHub secret BEGET_API_PASSWORD not found")
     data={
         "login":BEGET_LOGIN,
         "passwd":PASSWORD,
-        "output_format":"json",
-        "input_format":"json",
-        "input_data":json.dumps(params,ensure_ascii=False)
+        "output_format":"json"
     }
+    if params is not None:
+        data["input_format"]="json"
+        data["input_data"]=json.dumps(params,ensure_ascii=False)
     req=urllib.request.Request(
-        "https://api.beget.com/api/dns/"+method,
+        "https://api.beget.com/api/"+section+"/"+method,
         data=urllib.parse.urlencode(data).encode(),
         headers={"Content-Type":"application/x-www-form-urlencoded",
                  "User-Agent":"GHLeather-GitHubPages-DNS/1.0"},
@@ -116,7 +117,33 @@ def ensure_www():
     if public_www_cname()==[WWW_TARGET]:
         print("SUCCESS: www CNAME already points at the GitHub Pages owner.")
         return
-    entry=unwrap(call("getData",{"fqdn":WWW}))
+    created=False
+    try:
+        entry=unwrap(call("getData",{"fqdn":WWW}))
+    except RuntimeError:
+        # Beget's wildcard website A response is not an explicit www subzone.
+        # Create the free virtual subdomain only after confirming it is absent.
+        subs=call("getSubdomainList",section="domain")
+        if isinstance(subs,dict): subs=list(subs.values())
+        if not isinstance(subs,list): raise RuntimeError("Unexpected Beget subdomain list")
+        if any(str(s.get("fqdn","")).lower().rstrip(".")==WWW
+               for s in subs if isinstance(s,dict)):
+            raise RuntimeError("www exists but its DNS cannot be read; no alias changed")
+        domains=call("getList",section="domain")
+        if isinstance(domains,dict): domains=list(domains.values())
+        if not isinstance(domains,list): raise RuntimeError("Unexpected Beget domain list")
+        matches=[d for d in domains if isinstance(d,dict)
+                 and str(d.get("fqdn","")).lower().rstrip(".")==DOMAIN]
+        if len(matches)!=1 or not str(matches[0].get("id","")).isdigit():
+            raise RuntimeError("Cannot identify the exact parent domain; no alias created")
+        if os.environ.get("DRY_RUN","0")=="1":
+            print("DRY_RUN: would create the absent www alias and set its CNAME")
+            return
+        added=call("addSubdomainVirtual",{"subdomain":"www","domain_id":int(matches[0]["id"])},section="domain")
+        if isinstance(added,bool) or not str(added).isdigit():
+            raise RuntimeError("Beget did not confirm the virtual www subdomain")
+        created=True
+        entry=unwrap(call("getData",{"fqdn":WWW}))
     if str(entry.get("fqdn","")).lower().rstrip(".")!=WWW:
         raise RuntimeError("Beget returned wrong www domain; no alias changed")
     if entry.get("is_beget_dns") not in (True,1,"1","true","True"):
@@ -127,7 +154,7 @@ def ensure_www():
         raise RuntimeError("www is delegated elsewhere; no alias changed")
     records=entry.get("records",{})
     # CNAME cannot coexist with mail/TXT records; never silently drop these.
-    if any(x["value"] for kind in ("MX","TXT")
+    if not created and any(x["value"] for kind in ("MX","TXT")
            for x in formatted(records.get(kind,[]))):
         raise RuntimeError("www contains mail/TXT records; alias needs manual review")
     if os.environ.get("DRY_RUN","0")=="1":
